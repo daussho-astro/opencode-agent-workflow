@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -eo pipefail
 
 # Safe installer for opencode-agent-workflow
 # Default: never overwrite existing files.

@@ -50,26 +50,26 @@ This repository stores the full opencode agent configuration — models, prompts
 
 ```mermaid
 flowchart TD
-  U[User request] --> O["@orchestrator<br/>github-copilot/gpt-5.5<br/>classify + delegate"]
+  U[User request] --> O["@orchestrator<br/>opencode-go/kimi-k2.6<br/>classify + delegate"]
 
   O --> K{Cheapest safe route?}
 
   K -->|Commands / tests / git / reports| E["@executor<br/>opencode-go/deepseek-v4-flash"]
   K -->|Local code search / >5 files / unknown patterns| X["@explore<br/>opencode-go/deepseek-v4-flash"]
   K -->|Web fetch / web search| S["@scout<br/>opencode-go/deepseek-v4-flash"]
-  K -->|Simple docs / config / known-file fixes| GL["@general-lite<br/>opencode-go/kimi-k2.6"]
-  K -->|Vague BRD / TRD / planning| P["@planner<br/>github-copilot/gpt-5.5"]
+  K -->|Simple docs / config / known-file fixes| GL["@general-lite<br/>github-copilot/gpt-5.4-mini"]
+  K -->|Vague BRD / TRD / planning| P["@planner<br/>github-copilot/gpt-5.4"]
 
   GL --> RISK{Risk grew?}
   RISK -->|No| E
-  RISK -->|Yes: >2 files, root cause, architecture, security, data, test debugging| G["@general<br/>github-copilot/gpt-5.5"]
+  RISK -->|Yes: >2 files, root cause, architecture, security, data, test debugging| G["@general<br/>github-copilot/gpt-5.4"]
 
   K -->|Complex / risky implementation| G
   G --> E
 
   E --> RV{Review needed?}
-  RV -->|Low risk| RL["@reviewer-lite<br/>opencode-go/mimo-v2.5-pro"]
-  RV -->|Medium/high risk| R["@reviewer<br/>github-copilot/claude-opus-4.8"]
+  RV -->|Low risk| RL["@reviewer-lite<br/>github-copilot/gpt-5.4-mini"]
+  RV -->|Medium/high risk| R["@reviewer<br/>github-copilot/gpt-5.4"]
   RV -->|No| O
 
   X --> O
@@ -86,12 +86,12 @@ Policy: **default cheap, promote by risk**. Lite agents handle safe/simple work;
 
 | Agent | Model | Mode | Role |
 |-------|-------|------|------|
-| `@orchestrator` | `github-copilot/gpt-5.5` | primary | Plan, delegate, synthesize |
-| `@general` | `github-copilot/gpt-5.5` | subagent | Multi-step implementation, edits, coordination |
-| `@general-lite` | `opencode-go/kimi-k2.6` | subagent | Low-cost simple edits, docs, config fixes (dedicated lite prompt + guardrails) |
-| `@planner` | `github-copilot/gpt-5.5` | subagent | BRD → TRD + task breakdown |
-| `@reviewer` | `github-copilot/claude-opus-4.8` | subagent | Medium/high-risk review |
-| `@reviewer-lite` | `opencode-go/mimo-v2.5-pro` | subagent | Quick low-risk review (dedicated lite prompt + guardrails) |
+| `@orchestrator` | `opencode-go/kimi-k2.6` | primary | Plan, delegate, synthesize |
+| `@general` | `github-copilot/gpt-5.4` | subagent | Multi-step implementation, edits, coordination |
+| `@general-lite` | `github-copilot/gpt-5.4-mini` | subagent | Low-cost simple edits, docs, config fixes (dedicated lite prompt + guardrails) |
+| `@planner` | `github-copilot/gpt-5.4` | subagent | BRD → TRD + task breakdown |
+| `@reviewer` | `github-copilot/gpt-5.4` | subagent | Medium/high-risk review |
+| `@reviewer-lite` | `github-copilot/gpt-5.4-mini` | subagent | Quick low-risk review (dedicated lite prompt + guardrails) |
 | `@explore` | `opencode-go/deepseek-v4-flash` | subagent | Fast codebase exploration |
 | `@executor` | `opencode-go/deepseek-v4-flash` | subagent | Bash commands, tests, builds |
 | `@scout` | `opencode-go/deepseek-v4-flash` | subagent | Web fetch + search |

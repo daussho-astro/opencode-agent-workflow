@@ -58,17 +58,24 @@
 - Any impl needing test/build afterward
 - Risky logic, data migrations, security changes
 
-**Delegate to `@general-lite` for:** simple docs/config edits, known-file fixes, small renames, low-risk mechanical changes. If complexity/risk grows, escalate to `@general`.
+**Delegate to `@general-lite` for:** simple docs/config edits, known-file fixes, small renames, low-risk mechanical changes, import updates, dependency bumps, test expectation fixes, adding comments/logs, formatting fixes. Stay in lite by default; escalate only when actually blocked.
 
-**Promote `@general-lite` → `@general` when ANY trigger appears:**
-- Touches >2 code files or unclear root cause
+**Stay in `@general-lite` even when:**
+- Touches 2–3 files if changes are mechanical and well-understood
+- Renaming variables, functions, or files across a small scope
+- Updating configs, docs, or test expectations
+- Adding simple validation or error handling
+- Changes are repetitive/pattern-based across a few files
+
+**Promote `@general-lite` → `@general` only when MULTIPLE triggers present or blocked:**
+- Touches >3 code files with interdependent logic
 - Requires architecture/design decision
 - Changes business logic, money, permissions, auth, security, data migrations, or persistence semantics
 - Needs test/build failure interpretation or iterative debugging
-- Lite agent reports uncertainty/blocked/ambiguous risk
-- User asks for “robust”, “proper”, “production”, “refactor”, or root-cause bug fix
+- Lite agent reports uncertainty/blocked/ambiguous risk after trying
+- User explicitly asks for "robust", "proper", "production", "refactor", or root-cause bug fix
 
-If unsure: use lite/explore for investigation only, then promote before risky edits. Never use lite for high-impact implementation; never use strong agents for command-only/report-only work.
+If unsure: delegate to `@general-lite` first with a tight scope. Only escalate if lite returns "blocked" or the result is clearly wrong. Default cheap, escalate only when proven necessary.
 
 **Non-trivial code workflow:**
 1. `@explore` finds relevant code

@@ -33,7 +33,7 @@
     },
     "general": {
       "description": "General-purpose subagent for multi-step tasks not covered by specialized agents",
-      "model": "github-copilot/gpt-5.5",
+      "model": "github-copilot/gpt-5.4",
       "mode": "subagent",
       "permission": {
         "task": "allow",
@@ -52,7 +52,7 @@
     },
     "general-lite": {
       "description": "Low-cost implementation subagent for simple edits, docs, config, and known-file fixes",
-      "model": "opencode-go/kimi-k2.6",
+      "model": "github-copilot/gpt-5.4-mini",
       "mode": "subagent",
       "permission": {
         "task": "allow",
@@ -104,19 +104,19 @@
     },
     "reviewer": {
       "description": "Review local working-tree changes — writes findings to .opencode/review.md",
-      "model": "github-copilot/claude-opus-4.8",
+      "model": "github-copilot/gpt-5.4",
       "mode": "subagent",
       "prompt": "{file:~/.config/opencode/prompts/reviewer-guideline.md}"
     },
     "reviewer-lite": {
       "description": "Low-cost quick review for docs, config, simple diffs, and low-risk code changes",
-      "model": "opencode-go/mimo-v2.5-pro",
+      "model": "github-copilot/gpt-5.4-mini",
       "mode": "subagent",
       "prompt": "{file:~/.config/opencode/prompts/reviewer-lite-guideline.md}"
     },
     "planner": {
       "description": "Clarifies vague BRDs, explores codebase via @explore, produces TRD + task breakdown",
-      "model": "github-copilot/gpt-5.5",
+      "model": "github-copilot/gpt-5.4",
       "mode": "subagent",
       "prompt": "{file:~/.config/opencode/prompts/planner-guideline.md}",
       "permission": {
@@ -134,7 +134,7 @@
       }
     },
     "orchestrator": {
-      "model": "github-copilot/gpt-5.5",
+      "model": "opencode-go/kimi-k2.6",
       "mode": "primary",
       "description": "Smart orchestrator — delegates reads to @explore, commands to @executor, web to @scout",
       "prompt": "{file:~/.config/opencode/prompts/orchestrator-guideline.md}",

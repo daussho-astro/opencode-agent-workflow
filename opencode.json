@@ -1,0 +1,172 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": {
+    "edit": {
+      "~/.config/opencode/**": "allow"
+    }
+  },
+  "plugin": [
+    "@tarquinen/opencode-dcp@latest"
+  ],
+  "instructions": [
+    "~/.config/opencode/instructions/parallel-reads.md",
+    "~/.config/opencode/instructions/general-guideline.md",
+    "~/.config/opencode/instructions/coding-guideline.md"
+  ],
+  "small_model": "opencode-go/deepseek-v4-flash",
+  "provider": {
+    "9router": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "9router",
+      "options": {
+        "baseURL": "http://localhost:20128/v1"
+      }
+    }
+  },
+  "default_agent": "orchestrator",
+  "agent": {
+    "explore": {
+      "description": "Fast codebase exploration — glob, grep, and targeted file reads",
+      "model": "opencode-go/deepseek-v4-flash",
+      "mode": "subagent",
+      "permission": {
+        "read": "allow",
+        "grep": "allow",
+        "glob": "allow",
+        "list": "allow",
+        "edit": "deny",
+        "write": "deny",
+        "bash": "deny",
+        "webfetch": "deny",
+        "websearch": "deny",
+        "task": "deny"
+      },
+      "prompt": "{file:~/.config/opencode/prompts/explore-guideline.md}"
+    },
+    "general": {
+      "description": "General-purpose subagent for multi-step tasks not covered by specialized agents",
+      "model": "github-copilot/gpt-5.5",
+      "mode": "subagent",
+      "permission": {
+        "task": "allow",
+        "read": "allow",
+        "grep": "allow",
+        "glob": "allow",
+        "list": "allow",
+        "edit": "allow",
+        "write": "allow",
+        "question": "allow",
+        "bash": "deny",
+        "webfetch": "deny",
+        "websearch": "deny"
+      },
+      "prompt": "{file:~/.config/opencode/prompts/general-guideline.md}"
+    },
+    "general-lite": {
+      "description": "Low-cost implementation subagent for simple edits, docs, config, and known-file fixes",
+      "model": "opencode-go/kimi-k2.6",
+      "mode": "subagent",
+      "permission": {
+        "task": "allow",
+        "read": "allow",
+        "grep": "allow",
+        "glob": "allow",
+        "list": "allow",
+        "edit": "allow",
+        "write": "allow",
+        "question": "allow",
+        "bash": "deny",
+        "webfetch": "deny",
+        "websearch": "deny"
+      },
+      "prompt": "{file:~/.config/opencode/prompts/general-guideline.md}"
+    },
+    "scout": {
+      "model": "opencode-go/deepseek-v4-flash",
+      "prompt": "{file:~/.config/opencode/prompts/scout-guideline.md}",
+      "permission": {
+        "webfetch": "allow",
+        "websearch": "allow",
+        "read": "allow",
+        "grep": "allow",
+        "glob": "allow",
+        "list": "allow",
+        "edit": "deny",
+        "bash": "deny",
+        "write": "deny"
+      }
+    },
+    "executor": {
+      "description": "Execute bash commands, tests, builds, and validation — never suggests fixes, just reports",
+      "model": "opencode-go/deepseek-v4-flash",
+      "mode": "subagent",
+      "permission": {
+        "bash": "allow",
+        "read": "allow",
+        "grep": "allow",
+        "glob": "allow",
+        "list": "allow",
+        "edit": "deny",
+        "write": "deny",
+        "webfetch": "deny",
+        "websearch": "deny",
+        "task": "deny"
+      },
+      "prompt": "{file:~/.config/opencode/prompts/executor-guideline.md}"
+    },
+    "reviewer": {
+      "description": "Review local working-tree changes — writes findings to .opencode/review.md",
+      "model": "github-copilot/claude-opus-4.8",
+      "mode": "subagent",
+      "prompt": "{file:~/.config/opencode/prompts/reviewer-guideline.md}"
+    },
+    "reviewer-lite": {
+      "description": "Low-cost quick review for docs, config, simple diffs, and low-risk code changes",
+      "model": "opencode-go/mimo-v2.5-pro",
+      "mode": "subagent",
+      "prompt": "{file:~/.config/opencode/prompts/reviewer-guideline.md}"
+    },
+    "planner": {
+      "description": "Clarifies vague BRDs, explores codebase via @explore, produces TRD + task breakdown",
+      "model": "github-copilot/gpt-5.5",
+      "mode": "subagent",
+      "prompt": "{file:~/.config/opencode/prompts/planner-guideline.md}",
+      "permission": {
+        "task": "allow",
+        "read": "allow",
+        "grep": "allow",
+        "glob": "allow",
+        "list": "allow",
+        "edit": "allow",
+        "write": "allow",
+        "question": "allow",
+        "bash": "deny",
+        "webfetch": "deny",
+        "websearch": "deny"
+      }
+    },
+    "orchestrator": {
+      "model": "github-copilot/gpt-5.5",
+      "mode": "primary",
+      "description": "Smart orchestrator — delegates reads to @explore, commands to @executor, web to @scout",
+      "prompt": "{file:~/.config/opencode/prompts/orchestrator-guideline.md}",
+      "permission": {
+        "task": "allow",
+        "read": "allow",
+        "grep": "allow",
+        "glob": "allow",
+        "list": "allow",
+        "edit": "allow",
+        "write": "allow",
+        "question": "allow",
+        "bash": "deny",
+        "webfetch": "deny",
+        "websearch": "deny",
+        "plan_enter": "deny",
+        "plan_exit": "deny",
+        "repo_clone": "deny",
+        "repo_overview": "deny"
+      }
+    }
+  }
+}

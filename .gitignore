@@ -1,0 +1,15 @@
+.env
+auth.json
+*.secret
+*.key
+*.token
+*.pem
+*.p12
+*.pfx
+*backup*
+*.bak
+*.orig
+*.local
+.DS_Store
+.precompact.md
+*.original.md

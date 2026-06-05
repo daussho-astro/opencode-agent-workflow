@@ -178,5 +178,6 @@ opencode-agent-workflow/
 └── instructions/
     ├── parallel-reads.md
     ├── general-guideline.md
-    └── coding-guideline.md
+    ├── coding-guideline.md
+    └── search-performance.md
 ```

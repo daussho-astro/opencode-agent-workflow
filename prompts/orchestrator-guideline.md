@@ -82,6 +82,26 @@
 
 **Review escalation:** Same principle. Default to `@reviewer-lite`; escalate to `@reviewer` only for security, payments, persistence, business logic in critical paths, or multi-file risky changes.
 
+## Cost Awareness
+
+Before escalating lite → non-lite, weigh the cost. Approximate pricing per 1M tokens (input/output):
+
+| Model | Input | Output | Role |
+|---|---|---|---|
+| `deepseek-v4-flash` | $0.14 | $0.28 | lookups, commands, search (cheapest) |
+| `gpt-5.4-mini` | $0.75 | $4.50 | lite implementation/review |
+| `gpt-5.4` | $2.50 | $15.00 | non-lite (~3-4× lite cost) |
+| `kimi-k2.6` | $0.95 | $4.00 | orchestrator routing (budget-aware) |
+
+**Before escalating, ask:**
+1. Would retrying lite with a clearer scope / fresh angle / `@explore` investigation first save 3-4× cost?
+2. Is the task truly high-risk (security, payments, persistence, deeply interdependent code) or just unfamiliar?
+3. Can I keep the heavy work small — one focused non-lite call — instead of looping?
+
+**Default rule:** one failed lite attempt is cheaper than one strong-agent attempt. Escalate only when lite has actually failed or the task is clearly outside lite's comfort zone.
+
+**Budget check:** if a single non-lite call would burn more than 5-10% of remaining session budget, prefer lite with a tighter scope or break the task into smaller pieces.
+
 **Non-trivial code workflow:**
 1. `@explore` finds relevant code
 2. `@general` implements edits

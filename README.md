@@ -2,41 +2,85 @@
 
 Reproducible, version-controlled configuration for [opencode](https://opencode.ai/) multi-agent workflows.
 
+## Quick Install
+
+```bash
+git clone git@github.com:daussho-astro/opencode-agent-workflow.git
+cd opencode-agent-workflow
+./install.sh
+```
+
+The installer **never overwrites existing files by default**. It copies only missing files and skips anything already present. If you already have `~/.config/opencode/opencode.json`, the installer writes the repo version as `~/.config/opencode/opencode.workflow-template.json` instead of replacing your config.
+
+> **Flags:**
+> - `--dry-run` — preview actions without copying files.
+> - `--yes` — skip the confirmation prompt for safe actions (does **not** imply overwrite).
+> - `--overwrite` — **explicitly replace existing files** after creating a timestamped backup. Use with caution.
+
+## Prerequisites
+
+- **opencode CLI** installed on your system.
+- **git** installed.
+- **Provider authentication** completed by you (the installer does not handle secrets).
+- **Restart opencode** after install so the new configuration loads.
+
+## If you use an AI agent to install this
+
+Copy and paste the prompt below into your agent:
+
+> You are helping me install the opencode-agent-workflow configuration.
+> Safety rules:
+> 1. Do **not** overwrite any existing user files unless I explicitly say `--overwrite`.
+> 2. If `~/.config/opencode/opencode.json` already exists, **stop and ask me** whether to:
+>    - merge agent/default_agent/instructions manually, or
+>    - run `./install.sh --overwrite` to replace it.
+> 3. Clone the repository:
+>    `git clone git@github.com:daussho-astro/opencode-agent-workflow.git`
+> 4. Inspect the repo files (README.md, install.sh, opencode.json, prompts/, instructions/) to understand what will be installed.
+> 5. Run `./install.sh --dry-run` first, then `./install.sh`.
+> 6. After installation, validate that `~/.config/opencode/opencode.json` exists and is valid JSON.
+> 7. Do not read, print, or commit any secrets (especially `~/.local/share/opencode/auth.json` or API keys).
+> 8. Report the final installation status and next steps.
+
 ## Purpose
 
 This repository stores the full opencode agent configuration — models, prompts, instructions, and orchestration rules — so the workflow can be replicated across machines, shared with teammates, and restored after resets.
 
 ## Workflow Diagram
 
+```mermaid
+flowchart TD
+  U[User request] --> O["@orchestrator<br/>github-copilot/gpt-5.5<br/>classify + delegate"]
+
+  O --> K{Cheapest safe route?}
+
+  K -->|Commands / tests / git / reports| E["@executor<br/>opencode-go/deepseek-v4-flash"]
+  K -->|Local code search / >5 files / unknown patterns| X["@explore<br/>opencode-go/deepseek-v4-flash"]
+  K -->|Web fetch / web search| S["@scout<br/>opencode-go/deepseek-v4-flash"]
+  K -->|Simple docs / config / known-file fixes| GL["@general-lite<br/>opencode-go/kimi-k2.6"]
+  K -->|Vague BRD / TRD / planning| P["@planner<br/>github-copilot/gpt-5.5"]
+
+  GL --> RISK{Risk grew?}
+  RISK -->|No| E
+  RISK -->|Yes: >2 files, root cause, architecture, security, data, test debugging| G["@general<br/>github-copilot/gpt-5.5"]
+
+  K -->|Complex / risky implementation| G
+  G --> E
+
+  E --> RV{Review needed?}
+  RV -->|Low risk| RL["@reviewer-lite<br/>opencode-go/mimo-v2.5-pro"]
+  RV -->|Medium/high risk| R["@reviewer<br/>github-copilot/claude-opus-4.8"]
+  RV -->|No| O
+
+  X --> O
+  S --> O
+  P --> O
+  RL --> O
+  R --> O
+  O --> F["Final answer<br/>result + files + validation + follow-ups"]
 ```
-User Request
-    |
-    v
-+-----------+     reads/files    +---------+
-|           | -----------------> | @explore |
-|           |     bash/tests     | (cheap)  |
-|  Primary  | <----------------- +---------+
-|   Agent   |
-| (@orchestrator) |  webfetch/search  +---------+
-|   gpt-5.5 | <----------------- |  @scout  |
-|           |    (fast/cheap)    | (cheap)  |
-+-----------+                    +---------+
-    |
-    | delegates implementation / review
-    v
-+-----------+   +-------------+   +---------+
-|  @general |   | @general-lite | | @reviewer|
-|  gpt-5.5  |   |  kimi-k2.6   | |opus-4.8 |
-|  (strong) |   |  (low-cost)  | |(strong)  |
-+-----------+   +-------------+   +---------+
-    |
-    v
-+-----------+   +-------------+
-| @planner  |   |  @executor   |
-|  gpt-5.5  |   |deepseek-v4  |
-| (TRD/plan)|   |  (bash)     |
-+-----------+   +-------------+
-```
+
+Policy: **default cheap, promote by risk**. Lite agents handle safe/simple work; strong agents are reserved for risky implementation, planning, and medium/high-risk review.
 
 ## Agent / Model Table
 
@@ -52,22 +96,14 @@ User Request
 | `@executor` | `opencode-go/deepseek-v4-flash` | subagent | Bash commands, tests, builds |
 | `@scout` | `opencode-go/deepseek-v4-flash` | subagent | Web fetch + search |
 
-## Install
+## What the installer does
 
-```bash
-# 1. Clone or copy this repo
-cd opencode-agent-workflow
-
-# 2. Run the install script
-bash install.sh
-```
-
-The script will:
-- Copy `opencode.json` to `~/.config/opencode/opencode.json`
-- Copy all prompt files to `~/.config/opencode/prompts/`
-- Copy all instruction files to `~/.config/opencode/instructions/`
-- Validate JSON syntax
-- Check opencode version
+- **Safe by default:** existing files are never overwritten.
+- **Missing files only:** copies prompts and instructions only if they do not already exist.
+- **Template mode:** if `~/.config/opencode/opencode.json` already exists, the repo config is written as `opencode.workflow-template.json` so you can merge changes manually.
+- **Overwrite mode:** if you pass `--overwrite`, existing files are backed up to a timestamped directory under `~/.config/opencode/backups/` before being replaced.
+- **Validates** JSON syntax with `python3` if available.
+- **Checks** that the `opencode` CLI is present and prints its version.
 
 ## Validation Commands
 
@@ -86,14 +122,24 @@ python3 -m json.tool ~/.config/opencode/opencode.json > /dev/null && echo "JSON 
 
 ## Provider / Auth Notes
 
-- **You must authenticate providers yourself.** This repo does not contain any credentials.
+- **This repo intentionally does not define providers or credentials.** Providers are user-specific and must be configured separately.
+- **You must authenticate providers yourself.**
 - Supported providers in this config: `github-copilot`, `opencode-go`.
 - To authenticate, run:
   ```bash
-  opencode provider add github-copilot
-  opencode provider add opencode-go
+  opencode providers list
   ```
-- If you use a custom provider (e.g., the `9router` local endpoint in `opencode.json`), ensure it is reachable on your network.
+  Then follow the opencode login flow for GitHub Copilot and/or OpenCode Go as needed.
+
+## Troubleshooting
+
+| Problem | Solution |
+|---|---|
+| `opencode: command not found` | Install the opencode CLI and ensure it is in your PATH. |
+| Provider auth errors / models unavailable | Run `opencode providers list` and complete login for the providers you intend to use. |
+| Models still not listed after install | **Restart opencode** completely so the new config is loaded. |
+| Something broke after install | Restore your backup from `~/.config/opencode/backups/<timestamp>/`. |
+| Installer reports invalid JSON | Check `opencode.json` in this repo for syntax errors and open an issue. |
 
 ## No-Secrets Warning
 
@@ -115,8 +161,9 @@ opencode
 ```
 opencode-agent-workflow/
 ├── opencode.json              # Main config (agents, models, permissions)
-├── install.sh                 # One-command install script
+├── install.sh                 # One-command install script (safe, non-overwrite default)
 ├── README.md                  # This file
+├── AGENT_INSTALL.md           # Guide for AI agents
 ├── .gitignore                 # Excludes secrets/backups
 ├── prompts/
 │   ├── orchestrator-guideline.md

@@ -5,24 +5,12 @@
       "~/.config/opencode/**": "allow"
     }
   },
-  "plugin": [
-    "@tarquinen/opencode-dcp@latest"
-  ],
   "instructions": [
     "~/.config/opencode/instructions/parallel-reads.md",
     "~/.config/opencode/instructions/general-guideline.md",
     "~/.config/opencode/instructions/coding-guideline.md"
   ],
   "small_model": "opencode-go/deepseek-v4-flash",
-  "provider": {
-    "9router": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "9router",
-      "options": {
-        "baseURL": "http://localhost:20128/v1"
-      }
-    }
-  },
   "default_agent": "orchestrator",
   "agent": {
     "explore": {

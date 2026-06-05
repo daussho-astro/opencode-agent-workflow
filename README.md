@@ -62,7 +62,7 @@ flowchart TD
 
   GL --> RISK{Risk grew?}
   RISK -->|No| E
-  RISK -->|Yes: >2 files, root cause, architecture, security, data, test debugging| G["@general<br/>github-copilot/gpt-5.4"]
+  RISK -->|Yes: >7 files interdependent, architecture, security/payments/data, complex debugging| G["@general<br/>github-copilot/gpt-5.4"]
 
   K -->|Complex / risky implementation| G
   G --> E
@@ -80,7 +80,7 @@ flowchart TD
   O --> F["Final answer<br/>result + files + validation + follow-ups"]
 ```
 
-Policy: **default cheap, promote by risk**. Lite agents handle safe/simple work; strong agents are reserved for risky implementation, planning, and medium/high-risk review.
+Policy: **default cheap, promote by risk, 70-80% to lite.** Lite agents handle the bulk of work (docs, config, mechanical edits, small-to-medium bug fixes). Strong agents are reserved for the top 20-30% that are clearly hard, risky, or architectural.
 
 ## Agent / Model Table
 

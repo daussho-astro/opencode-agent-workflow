@@ -51,31 +51,36 @@
 **Orchestrator direct edit** — only when ALL true:
 - Exact path known, change clear + mechanical, ≤2 files, no build/test needed
 
-**Delegate to `@general` for:**
-- Feature work / bug fixes needing code discovery
-- Multi-file edits / refactors
-- Unknown code paths / architecture decisions
-- Any impl needing test/build afterward
-- Risky logic, data migrations, security changes
+**Default: 70-80% of tasks go to lite agents.** Strong agents are reserved for the top 20-30% that are clearly hard, risky, or architectural. Bias toward lite; escalate only when the task is clearly outside lite's comfort zone.
 
-**Delegate to `@general-lite` for:** simple docs/config edits, known-file fixes, small renames, low-risk mechanical changes, import updates, dependency bumps, test expectation fixes, adding comments/logs, formatting fixes. Stay in lite by default; escalate only when actually blocked.
+**Delegate to `@general-lite` for almost everything:**
+- Docs/config edits, known-file fixes, renames, mechanical changes
+- Import updates, dependency bumps, test expectation fixes
+- Adding comments/logs/formatting
+- Small-to-medium bug fixes with clear root cause
+- Simple feature additions (single-component scope)
+- Multi-file updates when changes are well-defined or pattern-based
+- Test/build failures with isolated, known fixes
 
 **Stay in `@general-lite` even when:**
-- Touches 2–3 files if changes are mechanical and well-understood
-- Renaming variables, functions, or files across a small scope
-- Updating configs, docs, or test expectations
-- Adding simple validation or error handling
-- Changes are repetitive/pattern-based across a few files
+- Touches 4-7 files if changes are mechanical or follow a clear pattern
+- Renaming across moderate scope (variables, functions, files)
+- Adding validation, error handling, or simple refactors
+- Implementing small features with clear specs
+- Repetitive/pattern-based changes across many files
+- Small-to-medium business-logic changes in non-critical paths
 
-**Promote `@general-lite` → `@general` only when MULTIPLE triggers present or blocked:**
-- Touches >3 code files with interdependent logic
-- Requires architecture/design decision
-- Changes business logic, money, permissions, auth, security, data migrations, or persistence semantics
-- Needs test/build failure interpretation or iterative debugging
-- Lite agent reports uncertainty/blocked/ambiguous risk after trying
-- User explicitly asks for "robust", "proper", "production", "refactor", or root-cause bug fix
+**Promote `@general-lite` → `@general` ONLY for clearly hard/complex work:**
+- Major architecture or design system changes
+- Touches >7 code files with deeply interdependent logic spanning modules
+- Production-critical: money, payments, auth, security, data migrations, persistence semantics
+- Complex multi-step debugging with unclear root cause across many modules
+- User explicitly says "robust", "proper", "production", "refactor", "root-cause", or "major"
+- Lite agent returned "blocked" or clearly wrong result after retry
 
-If unsure: delegate to `@general-lite` first with a tight scope. Only escalate if lite returns "blocked" or the result is clearly wrong. Default cheap, escalate only when proven necessary.
+**If unsure: start with lite.** The cost of one failed lite attempt is much less than one strong-agent attempt. Escalate only when proven necessary.
+
+**Review escalation:** Same principle. Default to `@reviewer-lite`; escalate to `@reviewer` only for security, payments, persistence, business logic in critical paths, or multi-file risky changes.
 
 **Non-trivial code workflow:**
 1. `@explore` finds relevant code

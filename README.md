@@ -88,10 +88,10 @@ Policy: **default cheap, promote by risk**. Lite agents handle safe/simple work;
 |-------|-------|------|------|
 | `@orchestrator` | `github-copilot/gpt-5.5` | primary | Plan, delegate, synthesize |
 | `@general` | `github-copilot/gpt-5.5` | subagent | Multi-step implementation, edits, coordination |
-| `@general-lite` | `opencode-go/kimi-k2.6` | subagent | Low-cost simple edits, docs, config fixes |
+| `@general-lite` | `opencode-go/kimi-k2.6` | subagent | Low-cost simple edits, docs, config fixes (dedicated lite prompt + guardrails) |
 | `@planner` | `github-copilot/gpt-5.5` | subagent | BRD → TRD + task breakdown |
 | `@reviewer` | `github-copilot/claude-opus-4.8` | subagent | Medium/high-risk review |
-| `@reviewer-lite` | `opencode-go/mimo-v2.5-pro` | subagent | Quick low-risk review |
+| `@reviewer-lite` | `opencode-go/mimo-v2.5-pro` | subagent | Quick low-risk review (dedicated lite prompt + guardrails) |
 | `@explore` | `opencode-go/deepseek-v4-flash` | subagent | Fast codebase exploration |
 | `@executor` | `opencode-go/deepseek-v4-flash` | subagent | Bash commands, tests, builds |
 | `@scout` | `opencode-go/deepseek-v4-flash` | subagent | Web fetch + search |
@@ -168,10 +168,12 @@ opencode-agent-workflow/
 ├── prompts/
 │   ├── orchestrator-guideline.md
 │   ├── general-guideline.md
+│   ├── general-lite-guideline.md
 │   ├── explore-guideline.md
 │   ├── executor-guideline.md
 │   ├── scout-guideline.md
 │   ├── reviewer-guideline.md
+│   ├── reviewer-lite-guideline.md
 │   └── planner-guideline.md
 └── instructions/
     ├── parallel-reads.md

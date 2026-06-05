@@ -67,7 +67,7 @@
         "webfetch": "deny",
         "websearch": "deny"
       },
-      "prompt": "{file:~/.config/opencode/prompts/general-guideline.md}"
+      "prompt": "{file:~/.config/opencode/prompts/general-lite-guideline.md}"
     },
     "scout": {
       "model": "opencode-go/deepseek-v4-flash",
@@ -112,7 +112,7 @@
       "description": "Low-cost quick review for docs, config, simple diffs, and low-risk code changes",
       "model": "opencode-go/mimo-v2.5-pro",
       "mode": "subagent",
-      "prompt": "{file:~/.config/opencode/prompts/reviewer-guideline.md}"
+      "prompt": "{file:~/.config/opencode/prompts/reviewer-lite-guideline.md}"
     },
     "planner": {
       "description": "Clarifies vague BRDs, explores codebase via @explore, produces TRD + task breakdown",

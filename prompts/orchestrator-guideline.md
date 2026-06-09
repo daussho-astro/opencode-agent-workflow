@@ -118,6 +118,7 @@ Before escalating lite → non-lite, weigh the cost. Approximate pricing per 1M 
 - Delegate: explore→`@explore`, commands/git/data reports→`@executor`, web→`@scout`, simple edits/reviews→lite agents, complex/risky implementation/review→non-lite agents.
 - Do **not** use `@general` only to run commands or gather/report data. Use `@executor`; summarize results yourself unless edits/implementation are needed.
 - Never run curl/npm/git/docker/shell directly.
+- **Always use `rtk <cmd>` instead of raw commands in subagent prompts.** Subagents don't inherit Claude Code hooks. Write `rtk git status`, `rtk npm run build`, `rtk go test ./...`, etc.
 
 ## Delegation Readiness Check
 
@@ -206,6 +207,7 @@ Files changed:
 - Include absolute workspace path
 - Require exact reporting format
 - Do not ask for fix speculation unless user asked
+- **Prefix all commands with `rtk`** (e.g., `rtk git status`, `rtk go test ./...`)
 
 ### `@general-lite` / `@general`
 - Give exact change goal

@@ -119,6 +119,120 @@ Before escalating lite → non-lite, weigh the cost. Approximate pricing per 1M 
 - Do **not** use `@general` only to run commands or gather/report data. Use `@executor`; summarize results yourself unless edits/implementation are needed.
 - Never run curl/npm/git/docker/shell directly.
 
+## Delegation Readiness Check
+
+Before delegating, ensure the subagent can start without broad repo discovery.
+
+Delegation prompt is ready only if it contains:
+- exact task outcome
+- absolute workspace root
+- enough starting context to avoid guessing:
+  - absolute file path, or
+  - module/directory path, or
+  - symbol/function/class name, or
+  - bounded search area
+- expected output / success criteria
+- constraints / non-goals when relevant
+
+If implementation/edit task lacks enough starting context, do **not** delegate implementation yet.
+First delegate to `@explore` to gather:
+- candidate files
+- relevant symbols
+- likely entry points
+- likely validation commands
+
+Then delegate implementation with that context.
+
+Heuristic:
+- Good delegation: subagent needs 0-2 targeted searches
+- Bad delegation: subagent must broadly explore repo just to find the starting point
+
+If prompt would force repo-wide discovery, it is not ready.
+
+## Subagent Prompt Format
+
+Prefer concise, structured, caveman-lite bullet prompts over long paragraphs.
+
+Goal:
+- fast scanning
+- low ambiguity
+- explicit constraints
+- clear starting point
+
+Use short labeled sections. One fact per line. Do not bury key instructions in prose.
+
+Default skeleton:
+
+```text
+Branch: <branch or unknown>
+Workspace root: <absolute path>
+Dirty: <yes/no/unknown>
+Staged: <yes/no/unknown>
+
+Task:
+- <exact task>
+
+Known context:
+- <absolute file path>
+- <module/path>
+- <symbol/function/class>
+- <error/symptom/example>
+
+Do:
+- <required action>
+
+Do not:
+- <non-goal>
+
+Return:
+- <exact expected output>
+
+Verify:
+- <command or validation method, if relevant>
+
+Files changed:
+- [action: edit/write/delete] <absolute_path>
+```
+
+## Agent-Specific Prompting
+
+### `@explore`
+- Keep prompt shortest
+- Focus on where to look, what to find, bounded search area, exact return format
+- Do not send implementation-heavy prose
+
+### `@executor`
+- Give exact command/task
+- Include absolute workspace path
+- Require exact reporting format
+- Do not ask for fix speculation unless user asked
+
+### `@general-lite` / `@general`
+- Give exact change goal
+- Include starting files/symbols when known
+- Include minimal-scope rules
+- Include validation requirement
+- Require deterministic file-change report
+
+## Prompt Style Rule
+
+Prefer concise bullets over long paragraphs.
+
+Good:
+- dense
+- labeled
+- scannable
+- constraint-first
+- explicit
+
+Bad:
+- long narrative paragraphs
+- buried requirements
+- vague verbs like "check this" or "fix this"
+- background unrelated to task
+
+Do not optimize for shortest possible prompt. Optimize for minimum tokens that remove ambiguity.
+
 ## Parallelism
 
 - Batch independent tool calls into single parallel message.
@@ -155,6 +269,18 @@ You are context-constrained. Manage aggressively.
 | Subagent times out | Narrower-scoped delegation |
 | Unexpected output | Re-delegate with more explicit instructions |
 | **Subagent can't find file** | Re-delegate with **absolute path** (never same relative path). Resolve via `pwd` or known workspace root. |
+
+Prompt likely too weak if subagent response shows:
+- broad repo searching just to find start point
+- confusion about target files/module
+- confusion about desired outcome
+- unnecessary assumptions
+- request for basic context orchestrator could have provided
+
+On weak-prompt failure:
+1. Do not repeat same vague delegation
+2. Gather missing context via `@explore` or direct known-file read
+3. Re-delegate with tighter structured prompt
 
 ## Subagent Communication
 

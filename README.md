@@ -82,6 +82,64 @@ flowchart TD
 
 Policy: **default cheap, promote by risk, 70-80% to lite.** Lite agents handle the bulk of work (docs, config, mechanical edits, small-to-medium bug fixes). Strong agents are reserved for the top 20-30% that are clearly hard, risky, or architectural.
 
+## Delegation Quality Rules
+
+Good orchestration is not only choosing the correct subagent. It is also packaging enough context so the subagent can start without broad repo discovery.
+
+Before delegating implementation work, ensure the prompt includes:
+- exact task outcome
+- absolute workspace root
+- one clear starting point:
+  - absolute file path, or
+  - module/directory path, or
+  - symbol/function/class name, or
+  - bounded search area
+- expected output / success criteria
+- constraints / non-goals when relevant
+
+If that context is missing, delegate discovery to `@explore` first, then send the implementation task with the discovered paths/symbols.
+
+Heuristic:
+- good delegation = 0-2 targeted searches
+- bad delegation = broad repo exploration just to find where to start
+
+Recommended prompt style for subagents:
+- concise
+- labeled
+- bullet-based
+- one fact per line
+- explicit constraints first
+
+Default skeleton:
+
+```text
+Branch: <branch or unknown>
+Workspace root: <absolute path>
+Dirty: <yes/no/unknown>
+Staged: <yes/no/unknown>
+
+Task:
+- <exact task>
+
+Known context:
+- <absolute file path>
+- <module/path>
+- <symbol/function/class>
+- <error/symptom/example>
+
+Do:
+- <required action>
+
+Do not:
+- <non-goal>
+
+Return:
+- <exact expected output>
+
+Verify:
+- <command or validation method, if relevant>
+```
+
 ## Agent / Model Table
 
 | Agent | Model | Mode | Role |

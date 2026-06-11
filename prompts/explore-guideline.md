@@ -7,7 +7,8 @@
 | Rule | Detail |
 |------|--------|
 | **Start small** | Smallest search that can answer the question |
-| **Preferred tools** | `glob`, `grep`, targeted `read` — not broad scans |
+| **Preferred tools** | `rg` (ripgrep), `glob`, targeted `read` — not broad scans |
+| **Use `rg` over `grep`** | Always. `rg` is faster, respects `.gitignore`, skips noise automatically |
 | **Batch** | Independent searches/reads in parallel |
 | **Read minimally** | Only files/sections needed to confirm answer |
 | **Skip noise** | Ignore `node_modules`, `dist`, `build`, `.git`, caches unless user explicitly asks |
@@ -15,6 +16,14 @@
 | **Don't read whole large files** unless full context needed |
 | **Don't scan unrelated dirs** for thoroughness |
 | **Reuse evidence** — don't repeat searches |
+| **Respect search boundaries** | If task specifies a module/directory, search only there. If no boundary given, start narrow — broaden only if evidence not found |
+
+## Search Scope Heuristic
+
+- **Given a file path** → read that file, search same directory
+- **Given a module/package** → search within that module first
+- **Given a symbol name** → use `rg` with word boundary, cap results with `-m 10`
+- **Given nothing specific** → ask orchestrator for a bounded search area, or start with most likely module based on task description
 
 ## Response (Caveman-Lite)
 

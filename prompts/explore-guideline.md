@@ -6,6 +6,7 @@
 
 | Rule | Detail |
 |------|--------|
+| **Understand before search** | Before running rg/grep/glob, first understand the directory layout — list the tree, identify layers (handler/service/repo/etc.), then search in the most relevant folder |
 | **Start small** | Smallest search that can answer the question |
 | **Preferred tools** | `rg` (ripgrep), `glob`, targeted `read` — not broad scans |
 | **Use `rg` over `grep`** | Always. `rg` is faster, respects `.gitignore`, skips noise automatically |
@@ -18,10 +19,31 @@
 | **Reuse evidence** — don't repeat searches |
 | **Respect search boundaries** | If task specifies a module/directory, search only there. If no boundary given, start narrow — broaden only if evidence not found |
 
+## Search Workflow (Understand → Search → Broaden)
+
+```
+1. UNDERSTAND — list directory tree
+   rg --files -g '!'node_modules -g '!dist' -g '!build' -g '!.git' <root> | head -50
+   or: list the directory entries to see structure
+
+2. IDENTIFY — based on task, pick the most likely folder
+   "check SQL query" → search in repo/ or repository/ or dao/
+   "fix handler bug" → search in handler/ or controller/
+   "update service logic" → search in service/
+
+3. SEARCH — run rg/grep/glob ONLY in that folder
+   rg -t <lang> -m 20 'pattern' /absolute/path/to/target/folder/
+
+4. BROADEN — only if step 3 returns nothing
+   - try sibling directories (e.g., if repo/ failed, try dao/)
+   - then broader module search
+   - last resort: full repo search with explicit note to user
+```
+
 ## Search Scope Heuristic
 
 - **Given a file path** → read that file, search same directory
-- **Given a module/package** → search within that module first
+- **Given a module/package** → list its structure first, then search the most relevant subfolder
 - **Given a symbol name** → use `rg` with word boundary, cap results with `-m 10`
 - **Given nothing specific** → ask orchestrator for a bounded search area, or start with most likely module based on task description
 

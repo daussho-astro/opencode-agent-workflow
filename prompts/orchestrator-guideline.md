@@ -200,7 +200,9 @@ Files changed:
 ### `@explore`
 - Keep prompt shortest
 - Focus on where to look, what to find, bounded search area, exact return format
+- **Always provide the directory tree or module path** so explore can search the most relevant folder first — do not send vague "find the SQL query" without a search area
 - Do not send implementation-heavy prose
+- If no specific folder is known, tell explore to list the directory structure first before searching
 
 ### `@executor`
 - Give exact command/task

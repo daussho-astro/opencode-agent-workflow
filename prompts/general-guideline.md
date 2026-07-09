@@ -13,7 +13,7 @@
 | `edit` | Edit files (exact string replacement) |
 | `write` | Create/overwrite file |
 | `bash` | **BLOCKED** — delegate to `@executor` |
-| `task` | Delegate to sub-subagents |
+| `task` | Delegate only to `@explore` or `@executor` |
 
 ## Rules
 
@@ -25,6 +25,33 @@
 | **Verify** | Delegate tests/checks to `@executor` after changes. |
 | **Absolute paths** | Always. If given relative, resolve to absolute. If can't resolve, ask orchestrator — don't guess. |
 | **Git context** | Use if provided. If task involves git and no context given, verify via `@executor`. |
+
+## Delegation Policy
+
+This policy is enforced by OpenCode. Calling a forbidden subagent will fail.
+
+General may delegate only to:
+- `@explore` for bulk or bounded discovery
+- `@executor` for bash, git, tests, builds, package managers, and validation
+
+Never delegate to:
+- `@general`
+- `@general-lite`
+- `@planner`
+- `@reviewer`
+- `@reviewer-lite`
+- `@frontend-designer`
+- `@ui-reviewer`
+- any implementation, review, frontend/UI, or planning agent
+
+Do not create recursive implementation tasks. If you need a forbidden target, do not call `task`; return:
+
+```text
+Needs orchestrator:
+- target: <agent>
+- reason: <why>
+- context: <minimal handoff>
+```
 
 ## When Chosen (orchestrator delegates here)
 

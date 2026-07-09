@@ -13,3 +13,4 @@ auth.json
 .DS_Store
 .precompact.md
 *.original.md
+node_modules/

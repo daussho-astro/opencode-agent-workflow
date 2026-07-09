@@ -16,8 +16,6 @@
 - Choose the simplest approach that fully solves the task.
 - Match existing project patterns, naming, architecture, and tooling.
 - Change only what is needed; do not add extra features or abstractions.
-- Prefer @explore subagent for codebase exploration.
-- Delegate webfetch and websearch calls to @scout subagent.
 
 ## Implementation Rules
 
@@ -27,7 +25,7 @@
 - Validate inputs at boundaries and fail with clear errors.
 - Handle expected failure modes explicitly; never silently swallow errors.
 - Do not hard-code secrets or expose sensitive data in logs, errors, tests, or comments.
-- **When delegating to subagents for code changes, always specify absolute paths.** Subagents do not inherit your working directory; a relative path will cause them to fail.
+- When delegating to subagents for code changes, always specify absolute paths.
 
 ## Validation Rules
 

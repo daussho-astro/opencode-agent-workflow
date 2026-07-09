@@ -6,6 +6,8 @@ Short instructions for an AI/code agent installing the opencode-agent-workflow.
 
 Install the opencode-agent-workflow configuration into `~/.config/opencode` by running the provided `install.sh` script.
 
+The installer handles `opencode.json`, prompts, instructions, commands, plugins, skills, and npm dependencies.
+
 ## Safety Rules
 
 - Do **not** read, print, or commit secrets.
@@ -34,6 +36,8 @@ After installation, confirm all of the following:
 
 - [ ] `~/.config/opencode/opencode.json` exists (or `opencode.workflow-template.json` if a user config already existed).
 - [ ] `python3 -m json.tool ~/.config/opencode/opencode.json` succeeds (or skip if `python3` is unavailable).
+- [ ] `~/.config/opencode/prompts`, `instructions`, `commands`, `plugins`, and `skills` contain the repo files or were intentionally skipped because they already existed.
+- [ ] `npm install --prefix ~/.config/opencode` succeeded, or npm was unavailable and dependencies will be installed manually.
 - [ ] `opencode --version` returns a version string.
 - [ ] No secrets were printed in output.
 
@@ -42,7 +46,7 @@ After installation, confirm all of the following:
 If the user wants to revert:
 
 1. Identify the latest backup directory under `~/.config/opencode/backups/`.
-2. Restore the backed-up `opencode.json`, `prompts/`, and `instructions/` to `~/.config/opencode/`.
+2. Restore the backed-up `opencode.json`, `prompts/`, `instructions/`, `commands/`, `plugins/`, `skills/`, and package files to `~/.config/opencode/`.
 3. Do **not** restore `auth.json`.
 
 Example:
@@ -55,5 +59,6 @@ cp -r "${BACKUP_DIR}"/* ~/.config/opencode/
 ## Notes
 
 - The installer does **not** handle provider authentication. The user must run `opencode providers list` and complete the login flow manually.
+- The installer may run `npm install --prefix ~/.config/opencode` to install npm-based plugins.
 - The installer validates JSON syntax if `python3` is available.
 - Restart opencode after installation so the new configuration loads.

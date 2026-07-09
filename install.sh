@@ -42,6 +42,9 @@ BACKUP_DIR="${CONFIG_DIR}/backups/${TIMESTAMP}"
 
 PROMPT_SRC_DIR="${SCRIPT_DIR}/prompts"
 INSTR_SRC_DIR="${SCRIPT_DIR}/instructions"
+COMMAND_SRC_DIR="${SCRIPT_DIR}/commands"
+PLUGIN_SRC_DIR="${SCRIPT_DIR}/plugins"
+SKILL_SRC_DIR="${SCRIPT_DIR}/skills"
 
 # Helper functions
 log() { echo "==> $*"; }
@@ -92,6 +95,14 @@ prompts_to_install=()
 prompts_to_skip=()
 instructions_to_install=()
 instructions_to_skip=()
+commands_to_install=()
+commands_to_skip=()
+plugins_to_install=()
+plugins_to_skip=()
+skills_to_install=()
+skills_to_skip=()
+packages_to_install=()
+packages_to_skip=()
 
 if [ -d "${PROMPT_SRC_DIR}" ]; then
   for src in "${PROMPT_SRC_DIR}"/*.md; do
@@ -127,6 +138,71 @@ if [ -d "${INSTR_SRC_DIR}" ]; then
   done
 fi
 
+if [ -d "${COMMAND_SRC_DIR}" ]; then
+  for src in "${COMMAND_SRC_DIR}"/*.md; do
+    [ -e "$src" ] || continue
+    name=$(basename "$src")
+    dest="${CONFIG_DIR}/commands/${name}"
+    if [ -e "$dest" ]; then
+      if [ "$OVERWRITE" = true ]; then
+        commands_to_install+=("$src")
+      else
+        commands_to_skip+=("$dest")
+      fi
+    else
+      commands_to_install+=("$src")
+    fi
+  done
+fi
+
+if [ -d "${PLUGIN_SRC_DIR}" ]; then
+  for src in "${PLUGIN_SRC_DIR}"/*; do
+    [ -f "$src" ] || continue
+    name=$(basename "$src")
+    dest="${CONFIG_DIR}/plugins/${name}"
+    if [ -e "$dest" ]; then
+      if [ "$OVERWRITE" = true ]; then
+        plugins_to_install+=("$src")
+      else
+        plugins_to_skip+=("$dest")
+      fi
+    else
+      plugins_to_install+=("$src")
+    fi
+  done
+fi
+
+if [ -d "${SKILL_SRC_DIR}" ]; then
+  while IFS= read -r src; do
+    rel="${src#${SKILL_SRC_DIR}/}"
+    dest="${CONFIG_DIR}/skills/${rel}"
+    if [ -e "$dest" ]; then
+      if [ "$OVERWRITE" = true ]; then
+        skills_to_install+=("$src")
+      else
+        skills_to_skip+=("$dest")
+      fi
+    else
+      skills_to_install+=("$src")
+    fi
+  done < <(find "${SKILL_SRC_DIR}" -type f)
+fi
+
+for src in "${SCRIPT_DIR}/package.json" "${SCRIPT_DIR}/package-lock.json"; do
+  [ -e "$src" ] || continue
+  name=$(basename "$src")
+  dest="${CONFIG_DIR}/${name}"
+  if [ -e "$dest" ]; then
+    if [ "$OVERWRITE" = true ]; then
+      packages_to_install+=("$src")
+    else
+      packages_to_skip+=("$dest")
+    fi
+  else
+    packages_to_install+=("$src")
+  fi
+done
+
 # Show plan
 log "Opencode Agent Workflow Installer"
 echo ""
@@ -156,6 +232,43 @@ done
 for dest in "${instructions_to_skip[@]}"; do
   echo "  SKIP     ${dest} (exists)"
 done
+
+for src in "${commands_to_install[@]}"; do
+  echo "  INSTALL  commands/$(basename "$src")"
+done
+for dest in "${commands_to_skip[@]}"; do
+  echo "  SKIP     ${dest} (exists)"
+done
+
+for src in "${plugins_to_install[@]}"; do
+  echo "  INSTALL  plugins/$(basename "$src")"
+done
+for dest in "${plugins_to_skip[@]}"; do
+  echo "  SKIP     ${dest} (exists)"
+done
+
+for src in "${skills_to_install[@]}"; do
+  rel="${src#${SKILL_SRC_DIR}/}"
+  echo "  INSTALL  skills/${rel}"
+done
+for dest in "${skills_to_skip[@]}"; do
+  echo "  SKIP     ${dest} (exists)"
+done
+
+for src in "${packages_to_install[@]}"; do
+  echo "  INSTALL  $(basename "$src")"
+done
+for dest in "${packages_to_skip[@]}"; do
+  echo "  SKIP     ${dest} (exists)"
+done
+
+if [ -f "${SCRIPT_DIR}/package.json" ]; then
+  if command -v npm >/dev/null 2>&1; then
+    echo "  RUN      npm install --prefix ${CONFIG_DIR}"
+  else
+    echo "  SKIP     npm install (npm not found)"
+  fi
+fi
 
 if [ "$OVERWRITE" = true ]; then
   echo ""
@@ -195,6 +308,23 @@ if [ "$OVERWRITE" = true ]; then
   done
   for src in "${instructions_to_install[@]}"; do
     dest="${CONFIG_DIR}/instructions/$(basename "$src")"
+    [ -e "$dest" ] && need_backup=true && break
+  done
+  for src in "${commands_to_install[@]}"; do
+    dest="${CONFIG_DIR}/commands/$(basename "$src")"
+    [ -e "$dest" ] && need_backup=true && break
+  done
+  for src in "${plugins_to_install[@]}"; do
+    dest="${CONFIG_DIR}/plugins/$(basename "$src")"
+    [ -e "$dest" ] && need_backup=true && break
+  done
+  for src in "${skills_to_install[@]}"; do
+    rel="${src#${SKILL_SRC_DIR}/}"
+    dest="${CONFIG_DIR}/skills/${rel}"
+    [ -e "$dest" ] && need_backup=true && break
+  done
+  for src in "${packages_to_install[@]}"; do
+    dest="${CONFIG_DIR}/$(basename "$src")"
     [ -e "$dest" ] && need_backup=true && break
   done
 fi
@@ -256,6 +386,67 @@ if [ ${#instructions_to_install[@]} -gt 0 ]; then
     cp "$src" "$dest"
     installed+=("$dest")
   done
+fi
+
+# Install commands
+if [ ${#commands_to_install[@]} -gt 0 ]; then
+  mkdir -p "${CONFIG_DIR}/commands"
+  for src in "${commands_to_install[@]}"; do
+    dest="${CONFIG_DIR}/commands/$(basename "$src")"
+    if [ "$OVERWRITE" = true ] && [ -e "$dest" ]; then
+      backup_if_exists "$dest"
+    fi
+    cp "$src" "$dest"
+    installed+=("$dest")
+  done
+fi
+
+# Install plugins
+if [ ${#plugins_to_install[@]} -gt 0 ]; then
+  mkdir -p "${CONFIG_DIR}/plugins"
+  for src in "${plugins_to_install[@]}"; do
+    dest="${CONFIG_DIR}/plugins/$(basename "$src")"
+    if [ "$OVERWRITE" = true ] && [ -e "$dest" ]; then
+      backup_if_exists "$dest"
+    fi
+    cp "$src" "$dest"
+    installed+=("$dest")
+  done
+fi
+
+# Install skills
+if [ ${#skills_to_install[@]} -gt 0 ]; then
+  for src in "${skills_to_install[@]}"; do
+    rel="${src#${SKILL_SRC_DIR}/}"
+    dest="${CONFIG_DIR}/skills/${rel}"
+    if [ "$OVERWRITE" = true ] && [ -e "$dest" ]; then
+      backup_if_exists "$dest"
+    fi
+    mkdir -p "$(dirname "$dest")"
+    cp "$src" "$dest"
+    installed+=("$dest")
+  done
+fi
+
+# Install package manifest/lock for npm-based plugins
+if [ ${#packages_to_install[@]} -gt 0 ]; then
+  for src in "${packages_to_install[@]}"; do
+    dest="${CONFIG_DIR}/$(basename "$src")"
+    if [ "$OVERWRITE" = true ] && [ -e "$dest" ]; then
+      backup_if_exists "$dest"
+    fi
+    cp "$src" "$dest"
+    installed+=("$dest")
+  done
+fi
+
+if [ -f "${CONFIG_DIR}/package.json" ]; then
+  log "Installing npm dependencies"
+  if command -v npm >/dev/null 2>&1; then
+    npm install --prefix "${CONFIG_DIR}"
+  else
+    warn "npm command not found; install dependencies manually in ${CONFIG_DIR}"
+  fi
 fi
 
 # Validate JSON if we installed opencode.json

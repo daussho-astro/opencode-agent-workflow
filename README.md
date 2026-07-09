@@ -12,6 +12,8 @@ cd opencode-agent-workflow
 
 The installer **never overwrites existing files by default**. It copies only missing files and skips anything already present. If you already have `~/.config/opencode/opencode.json`, the installer writes the repo version as `~/.config/opencode/opencode.workflow-template.json` instead of replacing your config.
 
+It also installs prompts, instructions, commands, plugins, skills, and npm dependencies used by the workflow.
+
 > **Flags:**
 > - `--dry-run` — preview actions without copying files.
 > - `--yes` — skip the confirmation prompt for safe actions (does **not** imply overwrite).
@@ -21,6 +23,7 @@ The installer **never overwrites existing files by default**. It copies only mis
 
 - **opencode CLI** installed on your system.
 - **git** installed.
+- **npm** installed if you want npm-based plugins such as `opencode-wakelock` installed automatically.
 - **Provider authentication** completed by you (the installer does not handle secrets).
 - **Restart opencode** after install so the new configuration loads.
 
@@ -36,7 +39,7 @@ Copy and paste the prompt below into your agent:
 >    - run `./install.sh --overwrite` to replace it.
 > 3. Clone the repository:
 >    `git clone git@github.com:daussho-astro/opencode-agent-workflow.git`
-> 4. Inspect the repo files (README.md, install.sh, opencode.json, prompts/, instructions/) to understand what will be installed.
+> 4. Inspect the repo files (README.md, install.sh, opencode.json, prompts/, instructions/, commands/, plugins/, skills/) to understand what will be installed.
 > 5. Run `./install.sh --dry-run` first, then `./install.sh`.
 > 6. After installation, validate that `~/.config/opencode/opencode.json` exists and is valid JSON.
 > 7. Do not read, print, or commit any secrets (especially `~/.local/share/opencode/auth.json` or API keys).
@@ -44,32 +47,32 @@ Copy and paste the prompt below into your agent:
 
 ## Purpose
 
-This repository stores the full opencode agent configuration — models, prompts, instructions, and orchestration rules — so the workflow can be replicated across machines, shared with teammates, and restored after resets.
+This repository stores the full opencode agent configuration — models, prompts, instructions, commands, plugins, skills, and orchestration rules — so the workflow can be replicated across machines, shared with teammates, and restored after resets.
 
 ## Workflow Diagram
 
 ```mermaid
 flowchart TD
-  U[User request] --> O["@orchestrator<br/>opencode-go/kimi-k2.6<br/>classify + delegate"]
+  U[User request] --> O["@orchestrator<br/>openai/gpt-5.5<br/>classify + delegate"]
 
   O --> K{Cheapest safe route?}
 
   K -->|Commands / tests / git / reports| E["@executor<br/>opencode-go/deepseek-v4-flash"]
   K -->|Local code search / >5 files / unknown patterns| X["@explore<br/>opencode-go/deepseek-v4-flash"]
   K -->|Web fetch / web search| S["@scout<br/>opencode-go/deepseek-v4-flash"]
-  K -->|Simple docs / config / known-file fixes| GL["@general-lite<br/>github-copilot/gpt-5.4-mini"]
-  K -->|Vague BRD / TRD / planning| P["@planner<br/>github-copilot/gpt-5.4"]
+  K -->|Simple docs / config / known-file fixes| GL["@general-lite<br/>openai/gpt-5.4-mini"]
+  K -->|Vague BRD / TRD / planning| P["@planner<br/>openai/gpt-5.5"]
 
   GL --> RISK{Risk grew?}
   RISK -->|No| E
-  RISK -->|Yes: >7 files interdependent, architecture, security/payments/data, complex debugging| G["@general<br/>github-copilot/gpt-5.4"]
+  RISK -->|Yes: >7 files interdependent, architecture, security/payments/data, complex debugging| G["@general<br/>opencode-go/deepseek-v4-pro"]
 
   K -->|Complex / risky implementation| G
   G --> E
 
   E --> RV{Review needed?}
-  RV -->|Low risk| RL["@reviewer-lite<br/>github-copilot/gpt-5.4-mini"]
-  RV -->|Medium/high risk| R["@reviewer<br/>github-copilot/gpt-5.4"]
+  RV -->|Low risk| RL["@reviewer-lite<br/>openai/gpt-5.4-mini"]
+  RV -->|Medium/high risk| R["@reviewer<br/>openai/gpt-5.5"]
   RV -->|No| O
 
   X --> O
@@ -144,22 +147,25 @@ Verify:
 
 | Agent | Model | Mode | Role |
 |-------|-------|------|------|
-| `@orchestrator` | `opencode-go/kimi-k2.6` | primary | Plan, delegate, synthesize |
-| `@general` | `github-copilot/gpt-5.4` | subagent | Multi-step implementation, edits, coordination |
-| `@general-lite` | `github-copilot/gpt-5.4-mini` | subagent | Low-cost simple edits, docs, config fixes (dedicated lite prompt + guardrails) |
-| `@planner` | `github-copilot/gpt-5.4` | subagent | BRD → TRD + task breakdown |
-| `@reviewer` | `github-copilot/gpt-5.4` | subagent | Medium/high-risk review |
-| `@reviewer-lite` | `github-copilot/gpt-5.4-mini` | subagent | Quick low-risk review (dedicated lite prompt + guardrails) |
+| `@orchestrator` | `openai/gpt-5.5` | primary | Plan, delegate, synthesize |
+| `@general` | `opencode-go/deepseek-v4-pro` | subagent | Multi-step implementation, edits, coordination |
+| `@general-lite` | `openai/gpt-5.4-mini` | subagent | Low-cost simple edits, docs, config fixes (dedicated lite prompt + guardrails) |
+| `@planner` | `openai/gpt-5.5` | subagent | BRD → TRD + task breakdown |
+| `@reviewer` | `openai/gpt-5.5` | subagent | Medium/high-risk review |
+| `@reviewer-lite` | `openai/gpt-5.4-mini` | subagent | Quick low-risk review (dedicated lite prompt + guardrails) |
 | `@explore` | `opencode-go/deepseek-v4-flash` | subagent | Fast codebase exploration |
 | `@executor` | `opencode-go/deepseek-v4-flash` | subagent | Bash commands, tests, builds |
 | `@scout` | `opencode-go/deepseek-v4-flash` | subagent | Web fetch + search |
+| `@frontend-designer` | `opencode-go/deepseek-v4-pro` | subagent | Frontend/UI implementation |
+| `@ui-reviewer` | `openai/gpt-5.5` | subagent | UI/UX review |
 
 ## What the installer does
 
 - **Safe by default:** existing files are never overwritten.
-- **Missing files only:** copies prompts and instructions only if they do not already exist.
+- **Missing files only:** copies prompts, instructions, commands, plugins, skills, and package files only if they do not already exist.
 - **Template mode:** if `~/.config/opencode/opencode.json` already exists, the repo config is written as `opencode.workflow-template.json` so you can merge changes manually.
 - **Overwrite mode:** if you pass `--overwrite`, existing files are backed up to a timestamped directory under `~/.config/opencode/backups/` before being replaced.
+- **Dependencies:** runs `npm install --prefix ~/.config/opencode` when `package.json` is present and npm is available.
 - **Validates** JSON syntax with `python3` if available.
 - **Checks** that the `opencode` CLI is present and prints its version.
 
@@ -180,14 +186,14 @@ python3 -m json.tool ~/.config/opencode/opencode.json > /dev/null && echo "JSON 
 
 ## Provider / Auth Notes
 
-- **This repo intentionally does not define providers or credentials.** Providers are user-specific and must be configured separately.
+- **This repo defines provider metadata, not credentials.** Authentication remains machine-specific.
 - **You must authenticate providers yourself.**
-- Supported providers in this config: `github-copilot`, `opencode-go`.
+- Common providers used by this config include `openai`, `opencode-go`, `9router`, and `astronauts`.
 - To authenticate, run:
   ```bash
   opencode providers list
   ```
-  Then follow the opencode login flow for GitHub Copilot and/or OpenCode Go as needed.
+  Then follow the opencode login flow for each provider you plan to use.
 
 ## Troubleshooting
 
@@ -232,10 +238,22 @@ opencode-agent-workflow/
 │   ├── scout-guideline.md
 │   ├── reviewer-guideline.md
 │   ├── reviewer-lite-guideline.md
+│   ├── frontend-designer-guideline.md
+│   ├── ui-reviewer-guideline.md
 │   └── planner-guideline.md
-└── instructions/
-    ├── parallel-reads.md
-    ├── general-guideline.md
-    ├── coding-guideline.md
-    └── search-performance.md
+├── instructions/
+│   ├── parallel-reads.md
+│   ├── general-guideline.md
+│   ├── coding-guideline.md
+│   └── search-performance.md
+├── commands/
+│   └── retitle.md
+├── plugins/
+│   └── subagent-policy.ts
+├── skills/
+│   └── graphify/
+│       ├── SKILL.md
+│       └── .graphify_version
+├── package.json
+└── package-lock.json
 ```

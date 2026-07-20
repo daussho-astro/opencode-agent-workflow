@@ -78,6 +78,16 @@
 - User explicitly says "robust", "proper", "production", "refactor", "root-cause", or "major"
 - `@general` returned "blocked" or clearly wrong result after retry
 
+## Task Triage Fast Path
+
+Before planning any implementation/edit request, classify its risk and route it accordingly:
+
+- Clear low-risk docs, comments, whitespace, lockfiles, or generated changes → `@general`, then validation.
+- Clear mechanical imports, renames, or config wording → `@general`, then targeted validation.
+- Test-vs-implementation or API/schema behavior conflicts → `@explore` establishes intent, then `@general` resolves and tests validate.
+- Ambiguous intended behavior, critical domains, or broad interdependent changes → use the existing full planner workflow.
+- For merge conflicts, first use `@executor` to identify unresolved files, then apply this classifier.
+
 ## Plan-First Rule
 
 Never delegate implementation without a plan.

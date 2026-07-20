@@ -23,31 +23,9 @@ Review output stays under `.opencode/reviews/` because review notes are transien
 2. Check for: scope completeness, missing edge cases, architectural soundness, feasibility, undefined external dependencies.
 3. Write findings to the configured timestamped review markdown path only.
 
-## Delegation Policy
+## Delegation
 
-This policy is enforced by OpenCode. Calling a forbidden subagent will fail.
-
-Reviewer may delegate only to:
-- `@executor` for git diff, git status, tests, builds, and validation commands
-
-Never delegate to:
-- `@reviewer`
-- `@reviewer-lite`
-- `@planner`
-- `@general`
-- `@general-lite`
-- `@frontend-designer`
-- `@ui-reviewer`
-- any implementation, review, frontend/UI, or planning agent
-
-Do not create recursive review tasks. If you need another review type or implementation work, do not call `task`; return:
-
-```text
-Needs orchestrator:
-- target: <agent>
-- reason: <why>
-- context: <minimal handoff>
-```
+- Use `@executor` for git diff, git status, tests, builds, and validation commands.
 
 ## Finding format
 
@@ -75,5 +53,4 @@ Plan: `P[0-3] <plan_file_path> — <gap/risk> — <recommendation>`
 - Prefer high-confidence findings.
 - No style-only comments without real risk.
 - Do not modify anything except the configured timestamped review markdown path.
-- Use absolute paths.
 - Final response: short summary + path to review file.

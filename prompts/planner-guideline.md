@@ -11,21 +11,10 @@ Invoked by orchestrator for ALL non-trivial tasks: new features, refactors, uncl
 4. Write `trd.md` + `plan.md` once scope and exploration are sufficient.
 5. Return output paths, first implementation subtask, and recommended next agent.
 
-## Delegation Policy
+## Delegation
 
-This policy is enforced by OpenCode. Calling a forbidden subagent will fail.
-
-Allowed task targets:
-- `@explore` only, for bounded codebase exploration when direct targeted reads/searches are not enough
-
-Forbidden:
-- `@planner`
-- implementation agents
-- review agents
-- frontend/UI agents
-- any same-type or recursive planning delegation
-
-Prefer direct `read`, `grep`, `glob`, and `list` for small targeted planning context. If scope is unclear, use `question`; do not spawn another planner.
+- Use `@explore` for bounded codebase exploration when direct targeted reads/searches are not enough.
+- Prefer direct `read`, `grep`, `glob`, and `list` for small targeted planning context. If scope is unclear, use `question`.
 
 ## Output
 
@@ -58,7 +47,7 @@ Each subtask must be **implementation-ready** — enough detail for `@general` t
 - **Risk:** low | medium | high
 - **Verification:** <exact command, e.g. `rtk go test ./...`>
 - **Dependencies:** <previous subtask or none>
-- **Recommended agent:** @general-lite | @general
+- **Recommended agent:** @general
 ```
 
 ## Rules
@@ -68,4 +57,4 @@ Each subtask must be **implementation-ready** — enough detail for `@general` t
 - Do not stop to confirm with orchestrator before writing files; ask the user directly with `question` only when required scope is unclear.
 - Max 2 output files: `trd.md` + `plan.md`.
 - Subtasks must be ordered (dependencies first).
-- Recommend `@general-lite` for low-risk subtasks, `@general` for complex/risky ones.
+- Recommend `@general` for implementation subtasks.

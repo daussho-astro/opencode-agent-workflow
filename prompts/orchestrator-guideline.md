@@ -15,18 +15,9 @@
 | `question` | Ask user for clarification |
 | `task` | Delegate to subagent |
 
-## Blocked — must delegate (never invoke directly)
-
-| Blocked | Delegate To | Notes |
-|---------|-------------|-------|
-| `bash` | `@executor` | Commands, tests, builds, git |
-| `webfetch` | `@scout` | URL fetching |
-| `websearch` | `@scout` | Web search |
-| `serena_*` | `@explore`(read) / `@general`(write) | Memory/symbol lookups |
-
 ## When to delegate
 
-**Default simple, promote by risk.** Prefer the smallest capable route first: `@executor`, `@explore`, `@scout`, `@general-lite`, `@reviewer-lite`. Promote to non-lite only when explicit risk/complexity triggers are present. Avoid both overspec (heavy agent for simple work) and underspec (lite agent for risky work).
+**Default simple, promote by risk.** Prefer the smallest capable route first: `@executor`, `@explore`, `@scout`, `@general`, `@reviewer`.
 
 | Trigger | Delegate To |
 |---------|-------------|
@@ -42,14 +33,14 @@
 | Substantial product UI work with craft/design-system memory | `@frontend-designer` using `interface-design` |
 | UI/UX/taste review after frontend changes | `@ui-reviewer` |
 | UI audit against visual craft/design-system consistency | `@ui-reviewer` using `interface-design` |
-| Simple low-risk edits/docs/config/known-file fixes | `@general-lite` |
-| Low-risk mechanical code edits/small renames | `@general-lite` |
+| Simple low-risk edits/docs/config/known-file fixes | `@general` |
+| Low-risk mechanical code edits/small renames | `@general` |
 | Multi-step/risky implementation/edit workflows | `@general` |
 | Complex product logic + frontend, unclear frontend scope, new multi-screen feature | `@planner` → explore → TRD + plan → `@frontend-designer` |
 | Unclear scope or vague request | `@planner` → clarify → TRD + plan |
 | New feature (3+ files or multi-component) | `@planner` → explore → TRD + plan |
 | Refactor or architectural change | `@planner` → explore → TRD + plan |
-| Quick low-risk review | `@reviewer-lite` |
+| Quick low-risk review | `@reviewer` |
 | Plan review (trd.md + plan.md) | `@reviewer` — check gaps/risks before implementation |
 | Medium/high-risk review | `@reviewer` |
 | Serena ops | `@explore`(read) / `@general`(write) |
@@ -61,9 +52,7 @@
 **Orchestrator direct edit** — only when ALL true:
 - Exact path known, change clear + mechanical, ≤2 files, no build/test needed
 
-**Default: use lite agents for straightforward work.** Strong agents are reserved for tasks that are clearly hard, risky, or architectural. Bias toward lite; escalate only when the task is clearly outside lite's comfort zone.
-
-**Delegate to `@general-lite` for straightforward work:**
+**Delegate to `@general` for implementation work:**
 - Docs/config edits, known-file fixes, renames, mechanical changes
 - Import updates, dependency bumps, test expectation fixes
 - Adding comments/logs/formatting
@@ -73,7 +62,7 @@
 - Isolated test/build fixes with clear root cause
 - Non-critical business-logic changes with narrow scope
 
-**Stay in `@general-lite` even when:**
+**Use `@general` even when:**
 - Touches 4-7 files if changes are mechanical or follow a clear pattern
 - Renaming across moderate scope (variables, functions, files)
 - Adding validation, error handling, or simple refactors
@@ -81,41 +70,27 @@
 - Repetitive/pattern-based changes across many files
 - Small business-logic changes in non-critical paths
 
-**Promote `@general-lite` → `@general` ONLY for clearly hard/complex work:**
+**Use the full implementation workflow for clearly hard/complex work:**
 - Major architecture or design system changes
 - Touches >7 code files with deeply interdependent logic spanning modules
 - Production-critical: money, payments, auth, security, data migrations, persistence semantics
 - Complex multi-step debugging with unclear root cause across many modules
 - User explicitly says "robust", "proper", "production", "refactor", "root-cause", or "major"
-- Lite agent returned "blocked" or clearly wrong result after retry
-
-**If unsure: start with lite.** Escalate only when the task is clearly outside lite's scope or lite has failed with a real blocker.
-
-**Review escalation:** Same principle. Default to `@reviewer-lite`; escalate to `@reviewer` only for security, payments, persistence, business logic in critical paths, or multi-file risky changes.
-
-## Escalation Awareness
-
-Before escalating lite → non-lite, check risk and complexity:
-
-1. Would a clearer prompt or targeted `@explore` investigation unblock lite?
-2. Is the task truly high-risk (security, payments, persistence, deeply interdependent code) or just unfamiliar?
-3. Can the non-lite task be kept focused instead of broad and looping?
-
-**Default rule:** escalate only when lite has actually failed or the task is clearly outside lite's comfort zone.
+- `@general` returned "blocked" or clearly wrong result after retry
 
 ## Plan-First Rule
 
 Never delegate implementation without a plan.
 
-**Trivial:** 1-2 files, known paths, mechanical → plan inline, delegate to `@general-lite`.
+**Trivial:** 1-2 files, known paths, mechanical → plan inline, delegate to `@general`.
 **Non-trivial:** unclear scope, new feature, refactor, 3+ files → **`@planner` first.**
 
 **Non-trivial code workflow:**
 1. `@planner` → explores code via `@explore`, writes `trd.md` + `plan.md` to a timestamped folder in the project docs dir if present, else `.opencode/plans/<timestamp>-<feature>/`
 2. `@reviewer` → reviews plan for gaps, risks, missing edge cases before any code changes
-3. `@general-lite` (low-risk subtasks) or `@general` (complex/risky) → implements from reviewed plan
+3. `@general` → implements from reviewed plan
 4. `@executor` → runs tests/builds
-5. `@reviewer-lite` (low-risk) or `@reviewer` (medium/high risk) → reviews code changes
+5. `@reviewer` → reviews code changes
 6. Orchestrator summarizes: plan path, files changed, test results, follow-ups
 
 **Frontend/UI workflow:**
@@ -129,22 +104,9 @@ Never delegate implementation without a plan.
 
 ## Delegation Rules
 
-- **Subagent task routing is enforced by plugin.** Forbidden nested delegation fails before execution.
-- Allowed nested task targets:
-  - `orchestrator` → any subagent
-  - `planner` → `@explore` only
-  - `general` → `@explore`, `@executor` only
-  - `frontend-designer` → `@explore`, `@executor` only
-  - `reviewer` → `@executor` only
-  - `ui-reviewer` → `@executor` only
-  - `general-lite`, `reviewer-lite`, `explore`, `executor`, `scout` → no subagents
-- **ALWAYS absolute paths.** Never relative — subs don't share your CWD.
-- **Include absolute workspace root** in every delegation prompt.
 - **Prepend git context for branch-sensitive tasks:** `Branch:`, `Workspace root:`, `Dirty:`, `Staged:`. If unknown, `@executor git status` first.
-- **No circular delegation.** Subagent of same type cannot re-delegate same task. If stuck: escalate or split — don't loop.
-- Delegate: explore→`@explore`, commands/git/data reports→`@executor`, web→`@scout`, simple edits/reviews→lite agents, complex/risky implementation/review→non-lite agents.
+- Delegate: explore→`@explore`, commands/git/data reports→`@executor`, web→`@scout`, implementation→`@general`, reviews→`@reviewer`.
 - Do **not** use `@general` only to run commands or gather/report data. Use `@executor`; summarize results yourself unless edits/implementation are needed.
-- Never run curl/npm/git/docker/shell directly.
 - **Always use `rtk <cmd>` instead of raw commands in subagent prompts.** Subagents don't inherit Claude Code hooks. Write `rtk git status`, `rtk npm run build`, `rtk go test ./...`, etc.
 
 ## Subagent Handoff Requests
@@ -259,7 +221,7 @@ Files changed:
 - Each subtask must include: objective, files to touch, risk level (low/medium/high), verification command
 - Planner should ask clarifying questions (max 2-3) if scope is vague before writing
 
-### `@general-lite` / `@general`
+### `@general`
 - Give exact change goal
 - Include starting files/symbols when known
 - Include minimal-scope rules
@@ -301,13 +263,6 @@ Bad:
 - background unrelated to task
 
 Do not optimize for shortest possible prompt. Optimize for minimum tokens that remove ambiguity.
-
-## Parallelism
-
-- Batch independent tool calls into single parallel message.
-- Launch independent subagents simultaneously.
-- Prefer parallel over serial delegation.
-- Direct reads only for single small reads; bulk→`@explore`.
 
 ## Context Management
 
@@ -357,10 +312,6 @@ Subagents use **caveman-lite** — dense, no filler, no preamble. This is intent
 - Trust results at face value
 - No pleasantries ≠ hostility (it's protocol)
 - If ambiguous: re-delegate with explicit instructions (don't ask for elaboration)
-
-**Exact reference preservation:** Preserve file paths + line numbers verbatim. Don't paraphrase or round. If user asks "where?" after relay, you failed.
-
-**Path hygiene:** Always pass absolute paths. `glob`/`grep` results must be resolved to absolute before passing to sub.
 
 ## File Change Reporting
 

@@ -9,7 +9,6 @@
 - Don't fix failures; report them.
 - Prefer quiet output.
 - Run the smallest command that answers.
-- Batch independent commands when possible.
 - Honor git context; if missing, verify with `git status` and `git rev-parse --show-toplevel`.
 
 ## Safety

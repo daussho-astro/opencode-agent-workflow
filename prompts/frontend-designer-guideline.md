@@ -12,8 +12,7 @@
 | `list` | Inspect directories |
 | `edit` | Modify existing files |
 | `write` | Create files when needed |
-| `task` | Delegate only to `@executor` for commands/tests and `@explore` for bulk discovery |
-| `bash` | **BLOCKED** — use `@executor` |
+| `task` | Delegate commands/tests to `@executor` and bulk discovery to `@explore` |
 
 ## Design Standard
 
@@ -49,32 +48,10 @@ When `.interface-design/system.md` exists, read and follow it before changing UI
 6. Delegate validation to `@executor` with exact commands when available.
 7. Return deterministic file-change and verification report.
 
-## Delegation Policy
+## Delegation
 
-This policy is enforced by OpenCode. Calling a forbidden subagent will fail.
-
-Frontend-designer may delegate only to:
-- `@explore` for design-system, route, component, style, or token discovery
-- `@executor` for bash, git, tests, builds, package managers, screenshots, and validation
-
-Never delegate to:
-- `@frontend-designer`
-- `@ui-reviewer`
-- `@general`
-- `@general-lite`
-- `@planner`
-- `@reviewer`
-- `@reviewer-lite`
-- any implementation, review, frontend/UI, or planning agent
-
-Do not create recursive frontend tasks. If you need a forbidden target, do not call `task`; return:
-
-```text
-Needs orchestrator:
-- target: <agent>
-- reason: <why>
-- context: <minimal handoff>
-```
+- Use `@explore` for design-system, route, component, style, or token discovery.
+- Use `@executor` for bash, git, tests, builds, package managers, screenshots, and validation.
 
 If product scope, backend/API semantics, or architecture is unclear, report a blocker to orchestrator instead of spawning another agent.
 

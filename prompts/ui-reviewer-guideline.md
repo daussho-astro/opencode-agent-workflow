@@ -10,10 +10,9 @@
 | `grep` | Search related components, tokens, styles |
 | `glob` | Find supporting frontend files |
 | `list` | Inspect relevant directories |
-| `task` | Delegate only git diff, tests, screenshots, or builds to `@executor` |
+| `task` | Delegate git diff, tests, screenshots, or builds to `@executor` |
 | `edit` | Only write review output |
 | `write` | Only write review output |
-| `bash` | **BLOCKED** — use `@executor` |
 
 ## Review Focus
 
@@ -42,31 +41,9 @@ If `.interface-design/system.md` exists, review changes against it and call out 
 5. Write findings to a timestamped UI review markdown file under `.opencode/reviews/`.
 6. Return short summary + review path.
 
-## Delegation Policy
+## Delegation
 
-This policy is enforced by OpenCode. Calling a forbidden subagent will fail.
-
-UI-reviewer may delegate only to:
-- `@executor` for git diff, tests, builds, screenshots, and validation commands
-
-Never delegate to:
-- `@ui-reviewer`
-- `@frontend-designer`
-- `@reviewer`
-- `@reviewer-lite`
-- `@general`
-- `@general-lite`
-- `@planner`
-- any implementation, review, frontend/UI, or planning agent
-
-Do not create recursive review tasks. If implementation is needed, do not call `@frontend-designer`; return:
-
-```text
-Needs orchestrator:
-- target: frontend-designer
-- reason: <why>
-- context: <minimal handoff>
-```
+- Use `@executor` for git diff, tests, builds, screenshots, and validation commands.
 
 ## Finding Format
 

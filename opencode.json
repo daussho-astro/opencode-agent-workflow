@@ -16,12 +16,14 @@
       "/tmp/**": "allow"
     }
   },
-  "plugin": ["opencode-wakelock"],
   "instructions": [
     "~/.config/opencode/instructions/parallel-reads.md",
     "~/.config/opencode/instructions/general-guideline.md",
     "~/.config/opencode/instructions/coding-guideline.md",
     "~/.config/opencode/instructions/search-performance.md"
+  ],
+  "plugin": [
+    "@dietrichgebert/ponytail"
   ],
   "small_model": "opencode-go/deepseek-v4-flash",
   "provider": {
@@ -40,61 +42,172 @@
       },
       "models": {
         "claude-sonnet-4-6": {
-          "name": "Claude Sonnet 4.6"
-        },
-        "claude-opus-4-7": {
-          "name": "Claude Opus 4.7"
-        },
-        "claude-opus-4-8": {
-          "name": "Claude Opus 4.8"
-        },
-        "claude-fable-5": {
-          "name": "Claude Fable 5"
-        },
-        "gpt-5.5-2026-04-23": {
-          "name": "GPT-5.5 2026-04-23"
-        },
-        "gemini/gemini-3.5-flash": {
-          "name": "Gemini 3.5 Flash"
-        },
-        "deepseek/deepseek-v4-pro": {
-          "name": "DeepSeek V4 Pro"
-        },
-        "text-embedding-3-small": {
-          "name": "Text Embedding 3 Small"
-        },
-        "gemini/gemini-2.5-flash": {
-          "name": "Gemini 2.5 Flash"
-        },
-        "claude-haiku-4-5-20251001": {
-          "name": "Claude Haiku 4.5 20251001"
-        },
-        "deepseek-v4-pro": {
-          "name": "DeepSeek V4 Pro"
+          "name": "Claude Sonnet 4.6",
+          "limit": {
+            "context": 250000,
+            "output": 64000
+          }
         },
         "claude-sonnet-5": {
-          "name": "Claude Sonnet 5"
+          "name": "Claude Sonnet 5",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
         },
-        "gemini/gemini-3-flash-preview": {
-          "name": "Gemini 3 Flash Preview"
+        "claude-opus-4-7": {
+          "name": "Claude Opus 4.7",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
+        },
+        "claude-opus-4-8": {
+          "name": "Claude Opus 4.8",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
+        },
+        "claude-fable-5": {
+          "name": "Claude Fable 5",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
+        },
+        "claude-haiku-4-5-20251001": {
+          "name": "Claude Haiku 4.5 20251001",
+          "limit": {
+            "context": 250000,
+            "output": 64000
+          }
+        },
+        "gpt-5.5-2026-04-23": {
+          "name": "GPT-5.5 2026-04-23",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
+        },
+        "gpt-5.6-terra": {
+          "name": "GPT-5.6 Terra",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
+        },
+        "gpt-5.6-luna": {
+          "name": "GPT-5.6 Luna",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
+        },
+        "gpt-5.6-sol": {
+          "name": "GPT-5.6 Sol",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
+        },
+        "gpt-5.4-mini": {
+          "name": "GPT-5.4 Mini",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
         },
         "gpt-5-mini": {
-          "name": "GPT-5 Mini"
-        },
-        "cohere/rerank-v3.5": {
-          "name": "Cohere Rerank v3.5"
-        },
-        "meta-llama/llama-4-scout": {
-          "name": "Llama 4 Scout"
-        },
-        "voyage/voyage-3-large": {
-          "name": "Voyage 3 Large"
-        },
-        "z-ai/glm-5.2": {
-          "name": "GLM 5.2"
+          "name": "GPT-5 Mini",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
         },
         "gpt-4o": {
-          "name": "GPT-4o"
+          "name": "GPT-4o",
+          "limit": {
+            "context": 250000,
+            "output": 16384
+          }
+        },
+        "gpt-4o-mini": {
+          "name": "GPT-4o Mini",
+          "limit": {
+            "context": 250000,
+            "output": 16384
+          }
+        },
+        "gemini/gemini-3.5-flash": {
+          "name": "Gemini 3.5 Flash",
+          "limit": {
+            "context": 250000,
+            "output": 65535
+          }
+        },
+        "gemini/gemini-3-flash-preview": {
+          "name": "Gemini 3 Flash Preview",
+          "limit": {
+            "context": 250000,
+            "output": 65535
+          }
+        },
+        "gemini/gemini-2.5-flash": {
+          "name": "Gemini 2.5 Flash",
+          "limit": {
+            "context": 250000,
+            "output": 65535
+          }
+        },
+        "deepseek-v4-pro": {
+          "name": "DeepSeek V4 Pro",
+          "limit": {
+            "context": 250000,
+            "output": 8192
+          }
+        },
+        "x-ai/grok-4.5": {
+          "name": "xAI Grok 4.5",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
+        },
+        "meta-llama/llama-4-scout": {
+          "name": "Llama 4 Scout",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
+        },
+        "z-ai/glm-5.2": {
+          "name": "GLM 5.2",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
+        },
+        "cohere/rerank-v3.5": {
+          "name": "Cohere Rerank v3.5",
+          "limit": {
+            "context": 4096,
+            "output": 4096
+          }
+        },
+        "voyage/voyage-3-large": {
+          "name": "Voyage 3 Large",
+          "limit": {
+            "context": 32000,
+            "output": 32000
+          }
+        },
+        "text-embedding-3-small": {
+          "name": "Text Embedding 3 Small",
+          "limit": {
+            "context": 8191,
+            "output": 8191
+          }
         }
       }
     }
@@ -117,11 +230,12 @@
         "websearch": "deny",
         "task": "deny"
       },
-      "prompt": "{file:~/.config/opencode/prompts/explore-guideline.md}"
+      "prompt": "{file:~/.config/opencode/prompts/explore-guideline.md}",
+      "options": {}
     },
     "general": {
       "description": "General-purpose subagent for multi-step tasks not covered by specialized agents",
-      "model": "opencode-go/deepseek-v4-pro",
+      "model": "openai/gpt-5.6-luna",
       "mode": "subagent",
       "permission": {
         "task": "allow",
@@ -137,26 +251,8 @@
         "webfetch": "deny",
         "websearch": "deny"
       },
-      "prompt": "{file:~/.config/opencode/prompts/general-guideline.md}"
-    },
-    "general-lite": {
-      "description": "Low-cost implementation subagent for simple edits, docs, config, and known-file fixes",
-      "model": "openai/gpt-5.4-mini",
-      "mode": "subagent",
-      "permission": {
-        "task": "allow",
-        "read": "allow",
-        "grep": "allow",
-        "glob": "allow",
-        "list": "allow",
-        "edit": "allow",
-        "write": "allow",
-        "question": "allow",
-        "bash": "deny",
-        "webfetch": "deny",
-        "websearch": "deny"
-      },
-      "prompt": "{file:~/.config/opencode/prompts/general-lite-guideline.md}"
+      "prompt": "{file:~/.config/opencode/prompts/general-guideline.md}",
+      "options": {}
     },
     "scout": {
       "model": "opencode-go/deepseek-v4-flash",
@@ -171,7 +267,8 @@
         "edit": "deny",
         "bash": "deny",
         "write": "deny"
-      }
+      },
+      "options": {}
     },
     "executor": {
       "description": "Execute bash commands, tests, builds, and validation — never suggests fixes, just reports",
@@ -189,11 +286,12 @@
         "websearch": "deny",
         "task": "deny"
       },
-      "prompt": "{file:~/.config/opencode/prompts/executor-guideline.md}"
+      "prompt": "{file:~/.config/opencode/prompts/executor-guideline.md}",
+      "options": {}
     },
     "reviewer": {
       "description": "Review local working-tree changes — writes timestamped findings to .opencode/reviews/",
-      "model": "openai/gpt-5.5",
+      "model": "openai/gpt-5.6-terra",
       "mode": "subagent",
       "prompt": "{file:~/.config/opencode/prompts/reviewer-guideline.md}",
       "permission": {
@@ -211,37 +309,16 @@
         "bash": "deny",
         "webfetch": "deny",
         "websearch": "deny"
-      }
-    },
-    "reviewer-lite": {
-      "description": "Low-cost quick review for docs, config, simple diffs, and low-risk code changes",
-      "model": "openai/gpt-5.4-mini",
-      "mode": "subagent",
-      "prompt": "{file:~/.config/opencode/prompts/reviewer-lite-guideline.md}",
-      "permission": {
-        "task": "allow",
-        "read": "allow",
-        "grep": "allow",
-        "glob": "allow",
-        "list": "allow",
-        "edit": {
-          "**/.opencode/reviews/**": "allow"
-        },
-        "write": {
-          "**/.opencode/reviews/**": "allow"
-        },
-        "bash": "deny",
-        "webfetch": "deny",
-        "websearch": "deny"
-      }
+      },
+      "options": {}
     },
     "planner": {
       "description": "Clarifies vague BRDs, explores codebase with direct reads, produces TRD + task breakdown",
-      "model": "openai/gpt-5.5",
+      "model": "openai/gpt-5.6-terra",
       "mode": "subagent",
       "prompt": "{file:~/.config/opencode/prompts/planner-guideline.md}",
       "permission": {
-        "task": "deny",
+        "task": "allow",
         "read": "allow",
         "grep": "allow",
         "glob": "allow",
@@ -253,11 +330,12 @@
         "bash": "deny",
         "webfetch": "deny",
         "websearch": "deny"
-      }
+      },
+      "options": {}
     },
     "frontend-designer": {
       "description": "Frontend/UI implementation expert — builds polished pages, components, responsive layouts, interaction states, and design-system-aligned UI",
-      "model": "opencode-go/deepseek-v4-pro",
+      "model": "openai/gpt-5.6-luna",
       "mode": "subagent",
       "prompt": "{file:~/.config/opencode/prompts/frontend-designer-guideline.md}",
       "permission": {
@@ -273,11 +351,12 @@
         "bash": "deny",
         "webfetch": "deny",
         "websearch": "deny"
-      }
+      },
+      "options": {}
     },
     "ui-reviewer": {
       "description": "UI/UX taste reviewer — critiques frontend changes for visual hierarchy, spacing, responsiveness, accessibility, interaction quality, and design-system fit",
-      "model": "openai/gpt-5.5",
+      "model": "openai/gpt-5.6-terra",
       "mode": "subagent",
       "prompt": "{file:~/.config/opencode/prompts/ui-reviewer-guideline.md}",
       "permission": {
@@ -296,10 +375,11 @@
         "bash": "deny",
         "webfetch": "deny",
         "websearch": "deny"
-      }
+      },
+      "options": {}
     },
     "orchestrator": {
-      "model": "openai/gpt-5.5",
+      "model": "openai/gpt-5.6-luna",
       "mode": "primary",
       "description": "Smart orchestrator — delegates reads to @explore, commands to @executor, web to @scout",
       "prompt": "{file:~/.config/opencode/prompts/orchestrator-guideline.md}",
@@ -319,7 +399,9 @@
         "plan_exit": "deny",
         "repo_clone": "deny",
         "repo_overview": "deny"
-      }
+      },
+      "options": {}
     }
-  }
+  },
+  "shell": "zsh"
 }

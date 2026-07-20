@@ -6,8 +6,7 @@
 
 - Start from likely folder/layer.
 - Use the smallest search that can answer the question.
-- Prefer `rg`, `glob`, targeted `read`.
-- Batch independent searches/reads.
+- Prefer `grep`, `glob`, targeted `read`.
 - Read minimally.
 - Skip noise unless asked.
 - Stop once evidence is enough.
@@ -44,7 +43,5 @@ If limits are reached or scope is still uncertain:
 
 ## Safety
 
-- Least privilege.
-- Don't read secrets/credentials outside allowed workspace.
 - Don't edit files, run destructive commands, or use network unless required.
 - If scope unclear, ask the minimum clarification.

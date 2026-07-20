@@ -53,37 +53,39 @@ This repository stores the full opencode agent configuration — models, prompts
 
 ```mermaid
 flowchart TD
-  U[User request] --> O["@orchestrator<br/>openai/gpt-5.5<br/>classify + delegate"]
+  U[User request] --> O["@orchestrator<br/>openai/gpt-5.6-luna<br/>classify + delegate"]
 
   O --> K{Cheapest safe route?}
 
   K -->|Commands / tests / git / reports| E["@executor<br/>opencode-go/deepseek-v4-flash"]
   K -->|Local code search / >5 files / unknown patterns| X["@explore<br/>opencode-go/deepseek-v4-flash"]
   K -->|Web fetch / web search| S["@scout<br/>opencode-go/deepseek-v4-flash"]
-  K -->|Simple docs / config / known-file fixes| GL["@general-lite<br/>openai/gpt-5.4-mini"]
-  K -->|Vague BRD / TRD / planning| P["@planner<br/>openai/gpt-5.5"]
-
-  GL --> RISK{Risk grew?}
-  RISK -->|No| E
-  RISK -->|Yes: >7 files interdependent, architecture, security/payments/data, complex debugging| G["@general<br/>opencode-go/deepseek-v4-pro"]
+  K -->|Docs / config / known-file fixes| G["@general<br/>openai/gpt-5.6-luna"]
+  K -->|Vague BRD / TRD / planning| P["@planner<br/>openai/gpt-5.6-terra"]
 
   K -->|Complex / risky implementation| G
   G --> E
 
   E --> RV{Review needed?}
-  RV -->|Low risk| RL["@reviewer-lite<br/>openai/gpt-5.4-mini"]
-  RV -->|Medium/high risk| R["@reviewer<br/>openai/gpt-5.5"]
+  RV -->|Medium/high risk| R["@reviewer<br/>openai/gpt-5.6-terra"]
   RV -->|No| O
 
   X --> O
   S --> O
   P --> O
-  RL --> O
   R --> O
   O --> F["Final answer<br/>result + files + validation + follow-ups"]
 ```
 
-Policy: **default cheap, promote by risk, 70-80% to lite.** Lite agents handle the bulk of work (docs, config, mechanical edits, small-to-medium bug fixes). Strong agents are reserved for the top 20-30% that are clearly hard, risky, or architectural.
+Routing is prompt-guided: use the smallest capable agent, then promote work when risk or complexity grows. The active configuration defines nine agents: `orchestrator`, `general`, `explore`, `executor`, `scout`, `planner`, `reviewer`, `frontend-designer`, and `ui-reviewer`. The `general-lite` and `reviewer-lite` prompt files remain unreferenced backups; they are not active agents.
+
+## Configuration Architecture
+
+- **Global runtime source:** `~/.config/opencode/opencode.json` and its prompt/instruction files are loaded by opencode.
+- **Repository backup:** this repository mirrors the configuration and source files for review, restoration, and installation. Repository-to-global installation is handled by `install.sh`; backup refresh runs in the opposite direction. See [AGENTS.md](AGENTS.md).
+- **Prompt backups:** nine prompt files are referenced by the active agents; `prompts/general-lite-guideline.md` and `prompts/reviewer-lite-guideline.md` are unreferenced backups.
+- **Permissions:** each agent has an explicit tool boundary. Read-only agents such as `explore` and `scout` cannot edit or write; `executor` can run commands but cannot edit or write; implementation agents receive edit/write access as configured. `permission.write` is a no-op in opencode, so file modification permission is controlled by `permission.edit`.
+- **Policy plugin boundary:** `plugins/subagent-policy.ts` is present in the repository backup but is not loaded by the current `plugin` list in `opencode.json`.
 
 ## Delegation Quality Rules
 
@@ -147,17 +149,15 @@ Verify:
 
 | Agent | Model | Mode | Role |
 |-------|-------|------|------|
-| `@orchestrator` | `openai/gpt-5.5` | primary | Plan, delegate, synthesize |
-| `@general` | `opencode-go/deepseek-v4-pro` | subagent | Multi-step implementation, edits, coordination |
-| `@general-lite` | `openai/gpt-5.4-mini` | subagent | Low-cost simple edits, docs, config fixes (dedicated lite prompt + guardrails) |
-| `@planner` | `openai/gpt-5.5` | subagent | BRD → TRD + task breakdown |
-| `@reviewer` | `openai/gpt-5.5` | subagent | Medium/high-risk review |
-| `@reviewer-lite` | `openai/gpt-5.4-mini` | subagent | Quick low-risk review (dedicated lite prompt + guardrails) |
+| `@orchestrator` | `openai/gpt-5.6-luna` | primary | Plan, delegate, synthesize |
+| `@general` | `openai/gpt-5.6-luna` | subagent | Multi-step implementation, edits, coordination |
+| `@planner` | `openai/gpt-5.6-terra` | subagent | BRD → TRD + task breakdown |
+| `@reviewer` | `openai/gpt-5.6-terra` | subagent | Medium/high-risk review |
 | `@explore` | `opencode-go/deepseek-v4-flash` | subagent | Fast codebase exploration |
 | `@executor` | `opencode-go/deepseek-v4-flash` | subagent | Bash commands, tests, builds |
 | `@scout` | `opencode-go/deepseek-v4-flash` | subagent | Web fetch + search |
-| `@frontend-designer` | `opencode-go/deepseek-v4-pro` | subagent | Frontend/UI implementation |
-| `@ui-reviewer` | `openai/gpt-5.5` | subagent | UI/UX review |
+| `@frontend-designer` | `openai/gpt-5.6-luna` | subagent | Frontend/UI implementation |
+| `@ui-reviewer` | `openai/gpt-5.6-terra` | subagent | UI/UX review |
 
 ## What the installer does
 

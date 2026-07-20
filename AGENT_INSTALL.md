@@ -8,6 +8,8 @@ Install the opencode-agent-workflow configuration into `~/.config/opencode` by r
 
 The installer handles `opencode.json`, prompts, instructions, commands, plugins, skills, and npm dependencies.
 
+`install.sh` copies repository content to `~/.config/opencode`. It does not automatically refresh this repository backup from the global configuration. To refresh the backup, compare and copy from `~/.config/opencode` using the procedure in [AGENTS.md](AGENTS.md).
+
 ## Safety Rules
 
 - Do **not** read, print, or commit secrets.

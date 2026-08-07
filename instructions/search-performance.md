@@ -1,12 +1,15 @@
 # Search Performance
 
-Default rules for every agent that runs `grep`, `rg`, `glob`, or shell searches. Keeps CPU low on large repos and avoids scanning noise.
+Default rules for searches. Keep CPU low on large repos and avoid scanning noise.
 
 ## Tool Choice
 
-- **Prefer `rg` (ripgrep) over `grep`** — 5-10× faster, respects `.gitignore` automatically.
-- `rg` is available on most opencode setups; if missing, fall back to `grep -r` with explicit exclusions.
-- Use `glob` (the opencode tool) for filename discovery before running a content search — it's metadata-only and cheap.
+- Agents without shell access: use the provided `glob` tool for filename discovery and `grep` tool for content searches.
+- Shell-capable agents: **prefer `rg` (ripgrep) over `grep`** — 5-10× faster, respects `.gitignore` automatically.
+- Shell-capable agents: if `rg` is unavailable, fall back to `grep -r` with explicit exclusions.
+- Use `glob` for filename discovery before a content search — it is metadata-only and cheap.
+
+The `rg` flags, pipes, and examples below apply to shell-capable agents.
 
 ## Default Exclusions
 
@@ -54,7 +57,6 @@ Language-specific additions:
 
 - **Don't batch >2 parallel `rg` calls on a large tree (>100k files).** Sequential is gentler on CPU.
 - For multi-area searches, prefer one `rg` with broader globs over many small calls.
-- If you must run many searches, prefer `@explore` subagent (uses `deepseek-v4-flash` and runs in its own context) over doing it inline.
 - Cap thread count for very large repos: `rg -j 2` to keep CPU under control.
 
 ## Examples

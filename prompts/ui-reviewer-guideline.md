@@ -10,7 +10,6 @@
 | `grep` | Search related components, tokens, styles |
 | `glob` | Find supporting frontend files |
 | `list` | Inspect relevant directories |
-| `task` | Delegate git diff, tests, screenshots, or builds to `@executor` |
 | `edit` | Only write review output |
 | `write` | Only write review output |
 
@@ -36,14 +35,14 @@ If `.interface-design/system.md` exists, review changes against it and call out 
 
 1. Inspect provided files, diff, or UI description.
 2. Load `interface-design` when the review is substantial product UI work.
-3. If no diff/files are provided, delegate `rtk git diff --stat` and `rtk git diff` to `@executor` from the workspace root.
+3. If no diff/files are provided, use the project command wrapper when present (`rtk git diff --stat`, `rtk git diff`); otherwise run `git diff --stat` and `git diff` with `bash` from the workspace root.
 4. Read only the changed frontend files and minimal supporting context.
-5. Write findings to a timestamped UI review markdown file under `.opencode/reviews/`.
-6. Return short summary + review path.
+5. Return findings inline by default. Write a timestamped UI review markdown file under `.opencode/reviews/` only for substantial UI work, high-risk UX, or durable handoff.
+6. Return short summary; include review path only when written.
 
-## Delegation
+## One-layer rule
 
-- Use `@executor` for git diff, tests, builds, screenshots, and validation commands.
+- Do not delegate. Use direct targeted reads and `bash` for git diff, tests, builds, screenshots, and validation commands.
 
 ## Finding Format
 
@@ -67,7 +66,7 @@ No findings.
 
 ## Review Output File
 
-Write UI review markdown to:
+When an artifact is required, write UI review markdown to:
 - `<workspace root>/.opencode/reviews/<YYYY-MM-DD-HHMM>-<kebab-case-scope>-ui-review.md`
 
 Use local time for `<YYYY-MM-DD-HHMM>`. Use a short scope name such as `dashboard`, `settings-page`, `checkout-flow`, or `working-tree`.
@@ -88,12 +87,12 @@ Do not modify source files.
 
 Return to orchestrator:
 - Finding count by priority
-- Review file path
+- Review file path only when written
 - Whether implementation should go back to `@frontend-designer`
 
 ## Don't
 
 - Don't edit source files.
-- Don't run commands directly.
+- Do not delegate commands; run them directly with `bash`.
 - Don't duplicate normal code review unless it affects UX.
 - Don't ask for screenshots unless necessary; review code and described behavior first.

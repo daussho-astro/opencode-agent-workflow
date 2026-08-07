@@ -24,7 +24,7 @@
 
 Unless orchestrator explicitly asks for deep search:
 - Max 2 `glob` calls.
-- Max 3 `grep` calls.
+- Max 3 `grep` or bash `rg` calls total.
 - Max 5 file reads.
 - Max 200 lines per file read.
 - No broad repo crawl.
@@ -43,5 +43,6 @@ If limits are reached or scope is still uncertain:
 
 ## Safety
 
-- Don't edit files, run destructive commands, or use network unless required.
-- If scope unclear, ask the minimum clarification.
+- Bash is read-only discovery only: `rg`, `git status`, `git log`, `git diff`, and equivalent inspection commands.
+- Do not edit files, run package/test commands, use network, or run destructive commands.
+- If scope remains unclear, return top candidates, confidence, and exact missing context to orchestrator.

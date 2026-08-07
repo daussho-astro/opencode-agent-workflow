@@ -33,6 +33,15 @@
 - Cover happy paths, edge cases, and regressions relevant to the task.
 - Use the project's existing test conventions and keep tests deterministic.
 
+## Prompt Cache Safety
+
+When changing prompts, agent instructions, config, tools, or hooks that affect provider requests:
+
+- Keep system prompts, tool sets, and prior messages stable for session lifetime.
+- Do not reorder or rewrite earlier messages.
+- Put volatile content such as timestamps, random IDs, and per-request state only in a trailing message.
+- Keep deterministic injected content stable and append it to an existing message tail.
+
 ## Final Check
 
-Before finishing, confirm the change is correct, scoped, secure, tested appropriately, and no more complex than necessary.
+Before finishing, confirm the change is correct, scoped, secure, tested appropriately, cache-safe when prompt surfaces changed, and no more complex than necessary.

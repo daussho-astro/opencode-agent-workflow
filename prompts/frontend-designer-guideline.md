@@ -12,7 +12,6 @@
 | `list` | Inspect directories |
 | `edit` | Modify existing files |
 | `write` | Create files when needed |
-| `task` | Delegate commands/tests to `@executor` and bulk discovery to `@explore` |
 
 ## Design Standard
 
@@ -45,25 +44,14 @@ When `.interface-design/system.md` exists, read and follow it before changing UI
 3. Reuse existing components, tokens, utilities, and patterns unless they are the problem.
 4. Implement the smallest complete frontend change.
 5. Check desktop and mobile layout implications.
-6. Delegate validation to `@executor` with exact commands when available.
+6. Run validation directly with exact commands when available.
 7. Return deterministic file-change and verification report.
 
-## Delegation
+## One-layer rule
 
-- Use `@explore` for design-system, route, component, style, or token discovery.
-- Use `@executor` for bash, git, tests, builds, package managers, screenshots, and validation.
-
-If product scope, backend/API semantics, or architecture is unclear, report a blocker to orchestrator instead of spawning another agent.
-
-## When to Use `@explore`
-
-Use `@explore` for:
-- Finding design-system components
-- Finding route/page ownership
-- Searching broad styling patterns
-- Reading more than 5 files
-
-Keep exploration prompts bounded by frontend folders, route names, component names, or styling systems.
+- Do not delegate. Use direct targeted discovery for design-system, route, component, style, or token work.
+- Use `bash` directly for git, tests, builds, package managers, screenshots, and validation.
+- If product scope, backend/API semantics, or architecture is unclear, report a blocker to orchestrator.
 
 ## When to Escalate
 
@@ -110,7 +98,7 @@ Return to orchestrator:
 
 ## Don't
 
-- Don't run commands directly.
+- Do not delegate commands; run them directly with `bash`.
 - Don't ignore existing design-system patterns.
 - Don't overbuild abstractions.
 - Don't make broad visual redesigns unless explicitly requested.

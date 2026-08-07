@@ -2,7 +2,8 @@
   "$schema": "https://opencode.ai/config.json",
   "permission": {
     "edit": {
-      "~/.config/opencode/**": "allow"
+      "~/.config/opencode/**": "allow",
+      "/tmp/**": "allow"
     },
     "read": {
       "~/Documents/**": "allow",
@@ -14,24 +15,103 @@
       "~/.cache/claude/**": "allow",
       "~/.cargo/**": "allow",
       "/tmp/**": "allow"
+    },
+    "external_directory": {
+      "/tmp/**": "allow",
+      "~/go/**": "allow"
     }
   },
   "instructions": [
+    "/Users/abdul.firdaus/.config/opencode/instructions/l1-to-l2-handoff.md",
     "~/.config/opencode/instructions/parallel-reads.md",
     "~/.config/opencode/instructions/general-guideline.md",
     "~/.config/opencode/instructions/coding-guideline.md",
-    "~/.config/opencode/instructions/search-performance.md"
+    "~/.config/opencode/instructions/search-performance.md",
+    "~/.config/opencode/instructions/gh-account-routing.md"
   ],
   "plugin": [
     "@dietrichgebert/ponytail"
   ],
   "small_model": "opencode-go/deepseek-v4-flash",
+  "subagent_depth": 1,
   "provider": {
     "9router": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "9router",
       "options": {
         "baseURL": "http://localhost:20128/v1"
+      },
+      "models": {
+        "astro-medium": {
+          "name": "Astro Medium",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
+        },
+        "astro-small": {
+          "name": "Astro Small",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
+        },
+        "astronauts/gpt-5.6-terra": {
+          "name": "GPT-5.6 Terra",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
+        },
+        "astronauts/gpt-5.6-luna": {
+          "name": "GPT-5.6 Luna",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
+        },
+        "astronauts/gpt-5.6-sol": {
+          "name": "GPT-5.6 Sol",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
+        },
+        "astronauts/gpt-5.4-mini": {
+          "name": "GPT-5.4 Mini",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
+        },
+        "astronauts/gpt-5-mini": {
+          "name": "GPT-5 Mini",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
+        },
+        "astronauts/deepseek-v4-pro": {
+          "name": "DeepSeek V4 Pro",
+          "limit": {
+            "context": 250000,
+            "output": 8192
+          }
+        },
+        "astronauts/moonshotai/kimi-k3": {
+          "name": "Kimi K3",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
+        },
+        "astronauts/z-ai/glm-5.2": {
+          "name": "GLM 5.2",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
+        }
       }
     },
     "astronauts": {
@@ -111,8 +191,29 @@
             "output": 128000
           }
         },
+        "gpt-5.4": {
+          "name": "GPT-5.4",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
+        },
         "gpt-5.4-mini": {
           "name": "GPT-5.4 Mini",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
+        },
+        "gpt-5.2-codex": {
+          "name": "GPT-5.2 Codex",
+          "limit": {
+            "context": 250000,
+            "output": 128000
+          }
+        },
+        "gpt-5.3-codex": {
+          "name": "GPT-5.3 Codex",
           "limit": {
             "context": 250000,
             "output": 128000
@@ -165,6 +266,13 @@
           "limit": {
             "context": 250000,
             "output": 8192
+          }
+        },
+        "moonshotai/kimi-k3": {
+          "name": "Kimi K3",
+          "limit": {
+            "context": 250000,
+            "output": 128000
           }
         },
         "x-ai/grok-4.5": {
@@ -224,30 +332,30 @@
         "glob": "allow",
         "list": "allow",
         "edit": "deny",
-        "write": "deny",
-        "bash": "deny",
+        "bash": "allow",
         "webfetch": "deny",
         "websearch": "deny",
-        "task": "deny"
+        "task": {
+          "*": "deny"
+        }
       },
       "prompt": "{file:~/.config/opencode/prompts/explore-guideline.md}",
       "options": {}
     },
     "general": {
       "description": "General-purpose subagent for multi-step tasks not covered by specialized agents",
-      "model": "openai/gpt-5.6-luna",
+      "model": "opencode-go/deepseek-v4-pro",
       "mode": "subagent",
       "permission": {
-        "task": "allow",
+        "task": "deny",
         "read": "allow",
         "grep": "allow",
         "glob": "allow",
         "list": "allow",
         "edit": "allow",
-        "write": "allow",
         "question": "allow",
         "skill": "allow",
-        "bash": "deny",
+        "bash": "allow",
         "webfetch": "deny",
         "websearch": "deny"
       },
@@ -255,6 +363,7 @@
       "options": {}
     },
     "scout": {
+      "description": "External documentation and dependency research agent",
       "model": "opencode-go/deepseek-v4-flash",
       "prompt": "{file:~/.config/opencode/prompts/scout-guideline.md}",
       "permission": {
@@ -265,28 +374,11 @@
         "glob": "allow",
         "list": "allow",
         "edit": "deny",
-        "bash": "deny",
-        "write": "deny"
-      },
-      "options": {}
-    },
-    "executor": {
-      "description": "Execute bash commands, tests, builds, and validation — never suggests fixes, just reports",
-      "model": "opencode-go/deepseek-v4-flash",
-      "mode": "subagent",
-      "permission": {
         "bash": "allow",
-        "read": "allow",
-        "grep": "allow",
-        "glob": "allow",
-        "list": "allow",
-        "edit": "deny",
-        "write": "deny",
-        "webfetch": "deny",
-        "websearch": "deny",
-        "task": "deny"
+        "task": {
+          "*": "deny"
+        }
       },
-      "prompt": "{file:~/.config/opencode/prompts/executor-guideline.md}",
       "options": {}
     },
     "reviewer": {
@@ -295,7 +387,7 @@
       "mode": "subagent",
       "prompt": "{file:~/.config/opencode/prompts/reviewer-guideline.md}",
       "permission": {
-        "task": "allow",
+        "task": "deny",
         "read": "allow",
         "grep": "allow",
         "glob": "allow",
@@ -303,31 +395,29 @@
         "edit": {
           "**/.opencode/reviews/**": "allow"
         },
-        "write": {
-          "**/.opencode/reviews/**": "allow"
-        },
-        "bash": "deny",
+        "bash": "allow",
         "webfetch": "deny",
         "websearch": "deny"
       },
       "options": {}
     },
     "planner": {
-      "description": "Clarifies vague BRDs, explores codebase with direct reads, produces TRD + task breakdown",
-      "model": "openai/gpt-5.6-terra",
+      "description": "Clarifies scope and produces implementation-ready patch plans",
+      "model": "openai/gpt-5.6-luna",
       "mode": "subagent",
       "prompt": "{file:~/.config/opencode/prompts/planner-guideline.md}",
       "permission": {
-        "task": "allow",
+        "task": "deny",
         "read": "allow",
         "grep": "allow",
         "glob": "allow",
         "list": "allow",
-        "edit": "allow",
-        "write": "allow",
+        "edit": {
+          "**/.opencode/plans/**": "allow"
+        },
         "question": "allow",
         "skill": "allow",
-        "bash": "deny",
+        "bash": "allow",
         "webfetch": "deny",
         "websearch": "deny"
       },
@@ -335,20 +425,19 @@
     },
     "frontend-designer": {
       "description": "Frontend/UI implementation expert — builds polished pages, components, responsive layouts, interaction states, and design-system-aligned UI",
-      "model": "openai/gpt-5.6-luna",
+      "model": "opencode-go/mimo-v2.5-pro",
       "mode": "subagent",
       "prompt": "{file:~/.config/opencode/prompts/frontend-designer-guideline.md}",
       "permission": {
-        "task": "allow",
+        "task": "deny",
         "read": "allow",
         "grep": "allow",
         "glob": "allow",
         "list": "allow",
         "edit": "allow",
-        "write": "allow",
         "question": "allow",
         "skill": "allow",
-        "bash": "deny",
+        "bash": "allow",
         "webfetch": "deny",
         "websearch": "deny"
       },
@@ -360,7 +449,7 @@
       "mode": "subagent",
       "prompt": "{file:~/.config/opencode/prompts/ui-reviewer-guideline.md}",
       "permission": {
-        "task": "allow",
+        "task": "deny",
         "read": "allow",
         "grep": "allow",
         "glob": "allow",
@@ -368,11 +457,8 @@
         "edit": {
           "**/.opencode/reviews/**": "allow"
         },
-        "write": {
-          "**/.opencode/reviews/**": "allow"
-        },
         "skill": "allow",
-        "bash": "deny",
+        "bash": "allow",
         "webfetch": "deny",
         "websearch": "deny"
       },
@@ -381,18 +467,26 @@
     "orchestrator": {
       "model": "openai/gpt-5.6-luna",
       "mode": "primary",
-      "description": "Smart orchestrator — delegates reads to @explore, commands to @executor, web to @scout",
+      "description": "Smart orchestrator — owns normal edits and commands; delegates discovery to @explore and web research to @scout",
       "prompt": "{file:~/.config/opencode/prompts/orchestrator-guideline.md}",
       "permission": {
-        "task": "allow",
+        "task": {
+          "*": "deny",
+          "general": "allow",
+          "planner": "allow",
+          "frontend-designer": "allow",
+          "reviewer": "allow",
+          "ui-reviewer": "allow",
+          "explore": "allow",
+          "scout": "allow"
+        },
         "read": "allow",
         "grep": "allow",
         "glob": "allow",
         "list": "allow",
         "edit": "allow",
-        "write": "allow",
         "question": "allow",
-        "bash": "deny",
+        "bash": "allow",
         "webfetch": "deny",
         "websearch": "deny",
         "plan_enter": "deny",

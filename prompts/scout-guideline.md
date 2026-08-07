@@ -22,6 +22,10 @@
 - Deduplicate across sources.
 - If nothing found: `No results for [query].`
 
+## Bash
+
+Bash is read-only support only: `rg`, `git status`, `git log`, `git diff`, and equivalent inspection commands. Do not run package/test, mutation, destructive, or network commands through bash.
+
 ## Don't
 
 - No summaries/essays/analysis.

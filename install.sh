@@ -46,6 +46,20 @@ COMMAND_SRC_DIR="${SCRIPT_DIR}/commands"
 PLUGIN_SRC_DIR="${SCRIPT_DIR}/plugins"
 SKILL_SRC_DIR="${SCRIPT_DIR}/skills"
 
+# Legacy backup-only files. They are intentionally not installed.
+SKIP_PROMPTS=("general-lite-guideline.md" "reviewer-lite-guideline.md")
+SKIP_PLUGINS=("subagent-policy.ts")
+
+is_skipped_file() {
+  local name="$1"
+  shift
+  local skipped
+  for skipped in "$@"; do
+    [ "$name" = "$skipped" ] && return 0
+  done
+  return 1
+}
+
 # Helper functions
 log() { echo "==> $*"; }
 info() { echo "    $*"; }
@@ -108,6 +122,7 @@ if [ -d "${PROMPT_SRC_DIR}" ]; then
   for src in "${PROMPT_SRC_DIR}"/*.md; do
     [ -e "$src" ] || continue
     name=$(basename "$src")
+    is_skipped_file "$name" "${SKIP_PROMPTS[@]}" && continue
     dest="${CONFIG_DIR}/prompts/${name}"
     if [ -e "$dest" ]; then
       if [ "$OVERWRITE" = true ]; then
@@ -159,6 +174,7 @@ if [ -d "${PLUGIN_SRC_DIR}" ]; then
   for src in "${PLUGIN_SRC_DIR}"/*; do
     [ -f "$src" ] || continue
     name=$(basename "$src")
+    is_skipped_file "$name" "${SKIP_PLUGINS[@]}" && continue
     dest="${CONFIG_DIR}/plugins/${name}"
     if [ -e "$dest" ]; then
       if [ "$OVERWRITE" = true ]; then

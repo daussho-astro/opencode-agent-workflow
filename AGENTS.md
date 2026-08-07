@@ -1,51 +1,50 @@
 # Agent Instructions
 
-## Syncing the Repository Backup
+## Sync Repository Backup
 
-The global configuration is the source; this repository is the reviewed backup. Review differences before copying, and never treat the repository backup as an automatic runtime sync.
+Global `~/.config/opencode/` is runtime source. This repository is reviewed backup and installer source. Review differences before copying. Never reverse sync direction during backup refresh.
+
+Do not read, print, or commit credentials, especially `~/.local/share/opencode/auth.json`.
 
 ### Compare
 
-Run through `@executor`:
-
 ```bash
-diff -u ~/.config/opencode/opencode.json opencode.json
-diff -ru ~/.config/opencode/prompts/ prompts/
+diff -qr ~/.config/opencode . \
+  -x node_modules -x .git -x backups -x .DS_Store \
+  -x dcp-prompts -x dcp.jsonc -x .ponytail-active \
+  -x .gitignore -x AGENTS.md -x AGENT_INSTALL.md -x README.md \
+  -x install.sh -x .opencode -x subagent-policy.ts \
+  -x general-lite-guideline.md -x reviewer-lite-guideline.md
 ```
+
+Review changed files before copying. Repo-only `AGENTS.md`, `AGENT_INSTALL.md`, `README.md`, `install.sh`, `.opencode/`, and legacy backup files are not global runtime config.
 
 ### Copy
 
-After reviewing the differences, run through `@executor`:
+Copy global runtime files into matching repository paths. Use `cp`; do not re-write synced files.
 
 ```bash
 cp ~/.config/opencode/opencode.json opencode.json
 cp ~/.config/opencode/prompts/*.md prompts/
+cp ~/.config/opencode/instructions/*.md instructions/
+cp ~/.config/opencode/plugins/* plugins/
+cp -R ~/.config/opencode/skills/* skills/
 ```
 
-These commands copy from the global runtime source to the repository backup. Do not reverse the direction during a backup refresh.
-
-When syncing prompt files from `~/.config/opencode/prompts/` to this repo:
-- Use `cp` via `@executor` — do not read and re-write the file
-- Example:
-  ```bash
-  cp ~/.config/opencode/prompts/orchestrator-guideline.md \
-     ~/Documents/projects/opencode-agent-workflow/prompts/orchestrator-guideline.md
-  ```
-- To sync all prompts at once:
-  ```bash
-  cp ~/.config/opencode/prompts/*.md \
-     ~/Documents/projects/opencode-agent-workflow/prompts/
-  ```
+Copy only regular config assets. Exclude machine-local runtime state such as `node_modules/`, `backups/`, `dcp-prompts/`, `dcp.jsonc`, `.ponytail-active`, and credentials.
 
 ### Validate
-
-Run through `@executor`:
 
 ```bash
 python3 -m json.tool opencode.json > /dev/null
 git diff --check
+git status --short
 ```
 
-The active configuration references nine prompt backups: `orchestrator`, `general`, `explore`, `executor`, `scout`, `reviewer`, `planner`, `frontend-designer`, and `ui-reviewer`. `general-lite-guideline.md` and `reviewer-lite-guideline.md` are unreferenced backups and should not be described as active agents.
+Known upstream whitespace in a synced file must remain unchanged unless global source fixes it. Validate other paths separately when needed:
 
-For permissions, `permission.write` is a no-op in opencode; `permission.edit` controls whether files may be modified.
+```bash
+git diff --check -- . ':(exclude)skills/graphify/SKILL.md'
+```
+
+Commit only reviewed config assets. Do not commit `.opencode/` plans or reviews unless explicitly requested.

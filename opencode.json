@@ -44,72 +44,192 @@
       "models": {
         "astro-medium": {
           "name": "Astro Medium",
+          "reasoning": true,
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            }
           }
         },
         "astro-small": {
           "name": "Astro Small",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
+          },
+          "reasoning": true,
+          "variants": {
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            }
           }
         },
         "astronauts/gpt-5.6-terra": {
           "name": "GPT-5.6 Terra",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
+          },
+          "reasoning": true,
+          "variants": {
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            }
           }
         },
         "astronauts/gpt-5.6-luna": {
           "name": "GPT-5.6 Luna",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
+          },
+          "reasoning": true,
+          "variants": {
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            }
           }
         },
         "astronauts/gpt-5.6-sol": {
           "name": "GPT-5.6 Sol",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
+          },
+          "reasoning": true,
+          "variants": {
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            }
           }
         },
         "astronauts/gpt-5.4-mini": {
           "name": "GPT-5.4 Mini",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
+          },
+          "reasoning": true,
+          "variants": {
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            }
           }
         },
         "astronauts/gpt-5-mini": {
           "name": "GPT-5 Mini",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
+          },
+          "reasoning": true,
+          "variants": {
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            }
           }
         },
         "astronauts/deepseek-v4-pro": {
           "name": "DeepSeek V4 Pro",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 8192
+          },
+          "reasoning": true,
+          "variants": {
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            }
           }
         },
         "astronauts/moonshotai/kimi-k3": {
           "name": "Kimi K3",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
+          },
+          "reasoning": true,
+          "variants": {
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            }
           }
         },
         "astronauts/z-ai/glm-5.2": {
           "name": "GLM 5.2",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
+          },
+          "reasoning": true,
+          "variants": {
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            }
           }
         }
       }
@@ -124,175 +244,175 @@
         "claude-sonnet-4-6": {
           "name": "Claude Sonnet 4.6",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 64000
           }
         },
         "claude-sonnet-5": {
           "name": "Claude Sonnet 5",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
           }
         },
         "claude-opus-4-7": {
           "name": "Claude Opus 4.7",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
           }
         },
         "claude-opus-4-8": {
           "name": "Claude Opus 4.8",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
           }
         },
         "claude-fable-5": {
           "name": "Claude Fable 5",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
           }
         },
         "claude-haiku-4-5-20251001": {
           "name": "Claude Haiku 4.5 20251001",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 64000
           }
         },
         "gpt-5.5-2026-04-23": {
           "name": "GPT-5.5 2026-04-23",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
           }
         },
         "gpt-5.6-terra": {
           "name": "GPT-5.6 Terra",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
           }
         },
         "gpt-5.6-luna": {
           "name": "GPT-5.6 Luna",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
           }
         },
         "gpt-5.6-sol": {
           "name": "GPT-5.6 Sol",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
           }
         },
         "gpt-5.4": {
           "name": "GPT-5.4",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
           }
         },
         "gpt-5.4-mini": {
           "name": "GPT-5.4 Mini",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
           }
         },
         "gpt-5.2-codex": {
           "name": "GPT-5.2 Codex",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
           }
         },
         "gpt-5.3-codex": {
           "name": "GPT-5.3 Codex",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
           }
         },
         "gpt-5-mini": {
           "name": "GPT-5 Mini",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
           }
         },
         "gpt-4o": {
           "name": "GPT-4o",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 16384
           }
         },
         "gpt-4o-mini": {
           "name": "GPT-4o Mini",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 16384
           }
         },
         "gemini/gemini-3.5-flash": {
           "name": "Gemini 3.5 Flash",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 65535
           }
         },
         "gemini/gemini-3-flash-preview": {
           "name": "Gemini 3 Flash Preview",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 65535
           }
         },
         "gemini/gemini-2.5-flash": {
           "name": "Gemini 2.5 Flash",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 65535
           }
         },
         "deepseek-v4-pro": {
           "name": "DeepSeek V4 Pro",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 8192
           }
         },
         "moonshotai/kimi-k3": {
           "name": "Kimi K3",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
           }
         },
         "x-ai/grok-4.5": {
           "name": "xAI Grok 4.5",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
           }
         },
         "meta-llama/llama-4-scout": {
           "name": "Llama 4 Scout",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
           }
         },
         "z-ai/glm-5.2": {
           "name": "GLM 5.2",
           "limit": {
-            "context": 250000,
+            "context": 262144,
             "output": 128000
           }
         },
@@ -323,7 +443,7 @@
   "default_agent": "orchestrator",
   "agent": {
     "explore": {
-      "description": "Fast codebase exploration — glob, grep, and targeted file reads",
+      "description": "Fast codebase exploration \u2014 glob, grep, and targeted file reads",
       "model": "opencode-go/deepseek-v4-flash",
       "mode": "subagent",
       "permission": {
@@ -344,7 +464,7 @@
     },
     "general": {
       "description": "General-purpose subagent for multi-step tasks not covered by specialized agents",
-      "model": "opencode-go/deepseek-v4-pro",
+      "model": "opencode-go/deepseek-v4-flash",
       "mode": "subagent",
       "permission": {
         "task": "deny",
@@ -382,7 +502,7 @@
       "options": {}
     },
     "reviewer": {
-      "description": "Review local working-tree changes — writes timestamped findings to .opencode/reviews/",
+      "description": "Review local working-tree changes \u2014 writes timestamped findings to .opencode/reviews/",
       "model": "openai/gpt-5.6-terra",
       "mode": "subagent",
       "prompt": "{file:~/.config/opencode/prompts/reviewer-guideline.md}",
@@ -424,8 +544,8 @@
       "options": {}
     },
     "frontend-designer": {
-      "description": "Frontend/UI implementation expert — builds polished pages, components, responsive layouts, interaction states, and design-system-aligned UI",
-      "model": "opencode-go/mimo-v2.5-pro",
+      "description": "Frontend/UI implementation expert \u2014 builds polished pages, components, responsive layouts, interaction states, and design-system-aligned UI",
+      "model": "opencode-go/deepseek-v4-flash",
       "mode": "subagent",
       "prompt": "{file:~/.config/opencode/prompts/frontend-designer-guideline.md}",
       "permission": {
@@ -444,7 +564,7 @@
       "options": {}
     },
     "ui-reviewer": {
-      "description": "UI/UX taste reviewer — critiques frontend changes for visual hierarchy, spacing, responsiveness, accessibility, interaction quality, and design-system fit",
+      "description": "UI/UX taste reviewer \u2014 critiques frontend changes for visual hierarchy, spacing, responsiveness, accessibility, interaction quality, and design-system fit",
       "model": "openai/gpt-5.6-terra",
       "mode": "subagent",
       "prompt": "{file:~/.config/opencode/prompts/ui-reviewer-guideline.md}",
@@ -467,7 +587,7 @@
     "orchestrator": {
       "model": "openai/gpt-5.6-luna",
       "mode": "primary",
-      "description": "Smart orchestrator — owns normal edits and commands; delegates discovery to @explore and web research to @scout",
+      "description": "Smart orchestrator \u2014 owns normal edits and commands; delegates discovery to @explore and web research to @scout",
       "prompt": "{file:~/.config/opencode/prompts/orchestrator-guideline.md}",
       "permission": {
         "task": {

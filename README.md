@@ -38,12 +38,12 @@ Active agents:
 | Agent | Model | Role |
 |---|---|---|
 | `@orchestrator` | `openai/gpt-5.6-luna` | Own normal edits, commands, delegation, final synthesis |
-| `@general` | `opencode-go/deepseek-v4-pro` | Complex or risky implementation |
+| `@general` | `opencode-go/deepseek-v4-flash` | Complex or risky implementation |
 | `@explore` | `opencode-go/deepseek-v4-flash` | Codebase discovery |
 | `@scout` | `opencode-go/deepseek-v4-flash` | External research |
 | `@planner` | `openai/gpt-5.6-luna` | Patch plans and scope clarification |
 | `@reviewer` | `openai/gpt-5.6-terra` | Working-tree review |
-| `@frontend-designer` | `opencode-go/mimo-v2.5-pro` | Product UI implementation |
+| `@frontend-designer` | `opencode-go/deepseek-v4-flash` | Product UI implementation |
 | `@ui-reviewer` | `openai/gpt-5.6-terra` | UI/UX review |
 
 Agent permissions define tool access. `permission.edit` controls file changes; `permission.write` is not an opencode permission.

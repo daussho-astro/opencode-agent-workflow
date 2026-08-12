@@ -4,7 +4,7 @@
 
 Install this workflow into `~/.config/opencode` with `install.sh`.
 
-Installer handles `opencode.json`, active prompts, instructions, commands, plugins, skills, and npm dependencies. Legacy `general-lite`, `reviewer-lite`, and `subagent-policy.ts` backups are not installed. It never handles provider credentials.
+Installer handles `opencode.json`, prompts, instructions, commands, plugins, skills, and npm dependencies. It never handles provider credentials.
 
 ## Safety Rules
 

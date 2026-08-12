@@ -14,3 +14,4 @@ auth.json
 .precompact.md
 *.original.md
 node_modules/
+.opencode/

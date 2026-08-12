@@ -11,7 +11,7 @@ cd opencode-agent-workflow
 ./install.sh
 ```
 
-Installer never overwrites existing files by default. When `~/.config/opencode/opencode.json` exists, it saves repo config as `~/.config/opencode/opencode.workflow-template.json` and installs only missing active supporting files. Legacy `general-lite`, `reviewer-lite`, and `subagent-policy.ts` backups remain repository-only.
+Installer never overwrites existing files by default. When `~/.config/opencode/opencode.json` exists, it saves repo config as `~/.config/opencode/opencode.workflow-template.json` and installs only missing supporting files.
 
 Flags:
 

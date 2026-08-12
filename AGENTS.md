@@ -13,11 +13,10 @@ diff -qr ~/.config/opencode . \
   -x node_modules -x .git -x backups -x .DS_Store \
   -x dcp-prompts -x dcp.jsonc -x .ponytail-active \
   -x .gitignore -x AGENTS.md -x AGENT_INSTALL.md -x README.md \
-  -x install.sh -x .opencode -x subagent-policy.ts \
-  -x general-lite-guideline.md -x reviewer-lite-guideline.md
+  -x install.sh -x .opencode \
 ```
 
-Review changed files before copying. Repo-only `AGENTS.md`, `AGENT_INSTALL.md`, `README.md`, `install.sh`, `.opencode/`, and legacy backup files are not global runtime config.
+Review changed files before copying. Repo-only `AGENTS.md`, `AGENT_INSTALL.md`, `README.md`, `install.sh`, and `.opencode/` are not global runtime config.
 
 ### Copy
 
